@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &297607135
+--- !u!1 &143808071
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,10 +127,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 297607139}
-  - component: {fileID: 297607138}
-  - component: {fileID: 297607137}
-  - component: {fileID: 297607136}
+  - component: {fileID: 143808076}
+  - component: {fileID: 143808075}
+  - component: {fileID: 143808074}
+  - component: {fileID: 143808073}
   m_Layer: 0
   m_Name: Camera2
   m_TagString: MainCamera
@@ -138,13 +138,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &297607136
+--- !u!114 &143808073
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297607135}
+  m_GameObject: {fileID: 143808071}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
@@ -182,21 +182,21 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!81 &297607137
+--- !u!81 &143808074
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297607135}
+  m_GameObject: {fileID: 143808071}
   m_Enabled: 1
---- !u!20 &297607138
+--- !u!20 &143808075
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297607135}
+  m_GameObject: {fileID: 143808071}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
@@ -241,21 +241,21 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &297607139
+--- !u!4 &143808076
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297607135}
+  m_GameObject: {fileID: 143808071}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.54569453, y: -0.50374055, z: 0.47189033, w: 0.4751658}
-  m_LocalPosition: {x: 287.5, y: 69.8, z: 0}
+  m_LocalRotation: {x: 0.70244986, y: -0.08102011, z: -0.08102011, w: 0.70244986}
+  m_LocalPosition: {x: 40.31, y: 11.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 96.27399, y: -19.398987, z: 68.006}
+  m_LocalEulerAnglesHint: {x: 103.159, y: 90, z: 90}
 --- !u!43 &309923199
 Mesh:
   m_ObjectHideFlags: 0
@@ -508,13 +508,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.54569453, y: -0.50374055, z: 0.47189033, w: 0.4751658}
-  m_LocalPosition: {x: 0, y: 69.8, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 96.27399, y: -19.398987, z: 68.006}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera1: {fileID: 330585545}
-  camera2: {fileID: 297607138}
+  camera2: {fileID: 143808075}
 --- !u!43 &409963806
 Mesh:
   m_ObjectHideFlags: 0
@@ -2100,7 +2100,7 @@ Transform:
   m_GameObject: {fileID: 1210284250}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.60804796, y: 0.0001, z: 1.1056774}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.6, y: 1, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2560,7 +2560,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 20
-  m_Acceleration: 8
+  m_Acceleration: 32
   avoidancePriority: 0
   m_AngularSpeed: 120
   m_StoppingDistance: 3
@@ -4323,7 +4323,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 330585546}
-  - {fileID: 297607139}
+  - {fileID: 143808076}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1280378623}
