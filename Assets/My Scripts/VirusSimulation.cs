@@ -4,12 +4,12 @@ public class VirusSimulation : MonoBehaviour
 {
     public float infectionRadius = 2f;  // Distance at which NPCs become "infected"
     public Color infectedColor = Color.black;  // Color when infected
-    private Renderer npcRenderer;
+    private InfectedCountDisplay infectedCountDisplay;
 
     void Start()
     {
-        // Get the Renderer component to change color
-        npcRenderer = GetComponent<Renderer>();
+        // Get reference to the InfectedCountDisplay to update the infected count UI
+        infectedCountDisplay = FindObjectOfType<InfectedCountDisplay>();
     }
 
     void Update()
@@ -20,7 +20,7 @@ public class VirusSimulation : MonoBehaviour
 
     void NPCInfectedCheck()
     {
-        // Find all NPC objects in the scene
+        // Find all NPC objects in the scene with the "NPC" tag
         GameObject[] allNPCs = GameObject.FindGameObjectsWithTag("NPC");
 
         foreach (GameObject npc in allNPCs)
@@ -29,15 +29,22 @@ public class VirusSimulation : MonoBehaviour
             if (npc == gameObject)
                 continue;
 
+            // Check if the NPC has already been infected by checking its color
+            Renderer npcRenderer = npc.GetComponent<Renderer>();
+            if (npcRenderer.material.color == infectedColor)
+                continue;  // Skip if NPC is already infected
+
             // Get the distance between this NPC and the other NPC
             float distance = Vector3.Distance(transform.position, npc.transform.position);
 
-            // If the distance is smaller than the infection radius, turn both NPCs black
+            // If the distance is smaller than the infection radius, infect the NPC
             if (distance < infectionRadius)
             {
-                // Change color of both NPCs to simulate infection
-                npc.GetComponent<Renderer>().material.color = infectedColor;
+                // Change color to infected color
                 npcRenderer.material.color = infectedColor;
+
+                // Update the infected count UI
+                infectedCountDisplay.IncreaseInfectedCount();
             }
         }
     }

@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class InfectedCountDisplay : MonoBehaviour
 {
-    public Text infectedCountText; // Reference to the Text UI element
+    public TextMeshProUGUI infectedCountText; // Reference to the TextMeshPro UI element
 
     private static int infectedCount = 0;
 
