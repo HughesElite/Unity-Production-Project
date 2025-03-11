@@ -5,7 +5,7 @@ public class CameraFollow : MonoBehaviour
     public Transform npc; // Reference to the NPC's Transform
     public Vector3 offset; // The offset position for the camera relative to the NPC
     public float distanceBehind = 6.0f; // The distance behind the NPC for the camera
-    public float heightOffset = 1.5f; // The height at which the camera should be (eye level)
+    public float heightOffset = 3f; // The height at which the camera should be (eye level)
 
     void Update()
     {
