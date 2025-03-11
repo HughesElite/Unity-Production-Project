@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7556880933127334429}
   - component: {fileID: 7556880933126367453}
   - component: {fileID: 2035860423544694096}
-  - component: {fileID: 1982703149359208698}
   - component: {fileID: 7665830639310924448}
+  - component: {fileID: 7481494703092471857}
   m_Layer: 0
   m_Name: Book Shop Textured
   m_TagString: Untagged
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 7556880933124175389}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000015497653, y: 0.70511806, z: -0.0000000154108, w: 0.70909}
-  m_LocalPosition: {x: -43.65139, y: -0.00004386902, z: -2.3824675}
+  m_LocalPosition: {x: -43.5, y: -0.00004386902, z: -4.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -116,26 +116,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1982703149359208698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7556880933124175389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedVersion: 0
-  m_OverrideArea: 1
-  m_Area: 1
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!65 &7665830639310924448
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -157,3 +137,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12.039235, y: 8.357073, z: 12.035602}
   m_Center: {x: 0.50256455, y: 4.1785803, z: 0.5064608}
+--- !u!114 &7481494703092471857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7556880933124175389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
