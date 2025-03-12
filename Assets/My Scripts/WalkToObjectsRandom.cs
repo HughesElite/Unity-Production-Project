@@ -10,7 +10,7 @@ public class PlayerMoveRandomly : MonoBehaviour
 
     public float waitTimeAtTarget = 2f;      // Time to wait at each target
     public float stopDistance = 2f;          // Distance from the target to stop
-    public float longerWaitTimeAtStart = 5f; // Time to wait at the start position before restarting
+    public float WaitTimeAtStart = 5f; // Time to wait at the start position before restarting
 
     private void Start()
     {
@@ -55,7 +55,7 @@ public class PlayerMoveRandomly : MonoBehaviour
 
         // Stop at the start position for a longer period
         agent.isStopped = true;
-        yield return new WaitForSeconds(longerWaitTimeAtStart);
+        yield return new WaitForSeconds(WaitTimeAtStart);
         agent.isStopped = false;
 
         // Restart the process
