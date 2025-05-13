@@ -3,8 +3,8 @@ using UnityEngine;
 public class CameraSwitcher : MonoBehaviour
 {
     public Camera camera1;           // Static Camera 1
-    public Camera camera2;           // Static Camera 2
-    public Camera camera3;           // Camera that follows the NPC
+    public Camera camera3;           // Static Camera 2
+    public Camera camera2;           // Camera that follows the NPC
     public Transform npc;            // Reference to the NPC's Transform
     public Vector3 offset;           // Offset from the NPC for the third camera
     public float followSpeed = 5f;   // Speed at which camera follows the NPC

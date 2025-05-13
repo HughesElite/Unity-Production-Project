@@ -1,13 +1,27 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Import the SceneManager namespace
 
 public class ResetSceneButton : MonoBehaviour
 {
+    // Reference to your GameControl script
+    private GameControl gameControl;
+
+    private void Start()
+    {
+        // Find the GameControl in the scene
+        gameControl = FindObjectOfType<GameControl>();
+
+        if (gameControl == null)
+        {
+            Debug.LogWarning("No GameControl found in scene. Reset button won't work.");
+        }
+    }
+
     // This function will be called when the button is clicked
     public void ResetScene()
     {
-        // Get the current scene's name and reload it
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
+        if (gameControl != null)
+        {
+            gameControl.ResetScene();
+        }
     }
 }

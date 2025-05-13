@@ -286,9 +286,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296fe5be254cad24fa5c7284cee4ba26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera1: {fileID: 330585545}
-  camera2: {fileID: 143808075}
-  camera3: {fileID: 321006239}
+  camera1: {fileID: 143808075}
+  camera2: {fileID: 321006239}
+  camera3: {fileID: 330585545}
   npc: {fileID: 1825327563}
   offset: {x: 0, y: 0, z: 0}
   followSpeed: 5
@@ -354,7 +354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -2244,8 +2244,9 @@ GameObject:
   - component: {fileID: 143808075}
   - component: {fileID: 143808074}
   - component: {fileID: 143808073}
+  - component: {fileID: 143808077}
   m_Layer: 0
-  m_Name: Camera 2 Side View
+  m_Name: Camera 1 Side View
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2369,6 +2370,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 755776067}
   m_LocalEulerAnglesHint: {x: 46.746, y: 0, z: 0}
+--- !u!114 &143808077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143808071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a0f8ab577c34494b8cecb3c5026de1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera1: {fileID: 143808075}
+  camera3: {fileID: 330585545}
+  camera2: {fileID: 321006239}
+  npc: {fileID: 1337727263}
+  offset: {x: 0, y: 0, z: 0}
+  followSpeed: 5
 --- !u!43 &152808864
 Mesh:
   m_ObjectHideFlags: 0
@@ -3254,7 +3273,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -5093,7 +5112,7 @@ GameObject:
   - component: {fileID: 321006237}
   - component: {fileID: 321006241}
   m_Layer: 0
-  m_Name: Camera 3 First Person NPC
+  m_Name: Camera 2 First Person
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5250,9 +5269,8 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
-  - component: {fileID: 330585548}
   m_Layer: 0
-  m_Name: Camera 1 Birds Eye
+  m_Name: Camera 3 Birds Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5376,24 +5394,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &330585548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a0f8ab577c34494b8cecb3c5026de1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera1: {fileID: 330585545}
-  camera2: {fileID: 143808075}
-  camera3: {fileID: 321006239}
-  npc: {fileID: 232265044}
-  offset: {x: 0, y: 0, z: 0}
-  followSpeed: 5
 --- !u!1 &331686656
 GameObject:
   m_ObjectHideFlags: 0
@@ -8538,7 +8538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -8999,7 +8999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -9913,7 +9913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -10089,7 +10089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -10725,7 +10725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -10912,9 +10912,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 330585546}
   - {fileID: 143808076}
   - {fileID: 321006240}
+  - {fileID: 330585546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &764467283
@@ -11396,7 +11396,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -11898,7 +11898,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5698112, g: 0.5698112, b: 0.5698112, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13015,7 +13015,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -13930,7 +13930,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -15233,7 +15233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -17198,7 +17198,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -17374,7 +17374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -18102,7 +18102,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -18885,7 +18885,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -19061,7 +19061,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -20069,7 +20069,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -20410,7 +20410,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -21058,7 +21058,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -21265,7 +21265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -24759,7 +24759,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -25566,7 +25566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -26460,7 +26460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
@@ -27063,7 +27063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Speed
-      value: 6
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5214378136223019869, guid: 1b1efe6167af35f4283896b0c98c3b5a, type: 3}
       propertyPath: m_Radius
