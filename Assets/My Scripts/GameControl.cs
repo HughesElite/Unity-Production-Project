@@ -1,12 +1,64 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro; // Include this if using TextMeshPro
 
 public class GameControl : MonoBehaviour
 {
-    private bool isGamePaused = false; // Track whether the game is paused or not
+    private bool isGamePaused = true; // Start paused by default
 
-    // Static property for scene reset state (accessible from any script)
+    // Reference to the play/pause button and its text
+    public Button playPauseButton;
+
+    // Reference to the button's text component (use appropriate type)
+    // For regular UI Text:
+    public Text buttonText;
+    // OR for TextMeshPro:
+    public TextMeshProUGUI buttonTMPText;
+
+    // Static property for scene reset state
     public static bool IsResetting { get; private set; } = false;
+
+    private void Awake()
+    {
+        // Initially pause the game
+        Time.timeScale = 0f;
+        isGamePaused = true;
+    }
+
+    private void Start()
+    {
+        // Set up button click event
+        if (playPauseButton != null)
+        {
+            playPauseButton.onClick.RemoveAllListeners();
+            playPauseButton.onClick.AddListener(TogglePlayPause);
+        }
+
+        // Update button text for initial state
+        UpdateButtonText();
+    }
+
+    // This runs when scene loads - automatically pause after reset
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // If we're resetting, pause the game after scene loads
+        if (IsResetting)
+        {
+            PauseGame();
+            UpdateButtonText();
+        }
+    }
 
     // Call this method to start the game
     public void StartGame()
@@ -14,36 +66,51 @@ public class GameControl : MonoBehaviour
         // Ensure the game is not paused
         Time.timeScale = 1f; // Resumes game time
         isGamePaused = false;
+        UpdateButtonText();
     }
 
     // Call this method to pause the game
     public void PauseGame()
     {
-        if (!isGamePaused)
+        Time.timeScale = 0f; // Freezes game time
+        isGamePaused = true;
+        UpdateButtonText();
+    }
+
+    // Toggle between play and pause states
+    public void TogglePlayPause()
+    {
+        if (isGamePaused)
         {
-            Time.timeScale = 0f; // Freezes game time
-            isGamePaused = true;
+            StartGame();
+        }
+        else
+        {
+            PauseGame();
         }
     }
 
-    // Call this method to stop the game
-    public void StopGame()
+    // Updates the button's text based on game state
+    private void UpdateButtonText()
     {
-        // Stop the game entirely, you could reload the scene if needed
-        Time.timeScale = 0f; // Freeze game time
-        // Optional: Reload the current scene (useful for restarting the game)
-        // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // For regular UI Text
+        if (buttonText != null)
+        {
+            buttonText.text = isGamePaused ? "Play" : "Pause";
+        }
+
+        // For TextMeshPro Text
+        if (buttonTMPText != null)
+        {
+            buttonTMPText.text = isGamePaused ? "Play" : "Pause";
+        }
     }
 
-    // New method to reset the scene
+    // Method to reset the scene
     public void ResetScene()
     {
         // Set the static flag that we're resetting
         IsResetting = true;
-
-        // Reset time scale in case the game was paused
-        Time.timeScale = 1f;
-        isGamePaused = false;
 
         // Reload the current scene
         string currentSceneName = SceneManager.GetActiveScene().name;

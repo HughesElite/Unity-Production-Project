@@ -34,11 +34,4 @@ public class InfectedCountDisplay : MonoBehaviour
         infectedCount++;
         UpdateInfectedCountText(); // Update the UI
     }
-
-    // Optional: Add a public method to manually reset the count if needed
-    public void ResetCount()
-    {
-        infectedCount = 0;
-        UpdateInfectedCountText();
-    }
 }
