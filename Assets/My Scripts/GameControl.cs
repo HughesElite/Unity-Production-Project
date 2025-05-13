@@ -2,22 +2,20 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro; // Include this if using TextMeshPro
-
 public class GameControl : MonoBehaviour
 {
     private bool isGamePaused = true; // Start paused by default
-
     // Reference to the play/pause button and its text
     public Button playPauseButton;
-
     // Reference to the button's text component (use appropriate type)
     // For regular UI Text:
     public Text buttonText;
     // OR for TextMeshPro:
     public TextMeshProUGUI buttonTMPText;
-
     // Static property for scene reset state
     public static bool IsResetting { get; private set; } = false;
+    // Add this variable to track if spacebar was pressed last frame
+    private bool wasSpacebarPressed = false;
 
     private void Awake()
     {
@@ -34,9 +32,24 @@ public class GameControl : MonoBehaviour
             playPauseButton.onClick.RemoveAllListeners();
             playPauseButton.onClick.AddListener(TogglePlayPause);
         }
-
         // Update button text for initial state
         UpdateButtonText();
+    }
+
+    // Add this Update method to check for spacebar input
+    private void Update()
+    {
+        // Check if spacebar is pressed
+        bool isSpacebarPressed = Input.GetKey(KeyCode.Space);
+
+        // Toggle only on the frame when spacebar is first pressed down
+        if (isSpacebarPressed && !wasSpacebarPressed)
+        {
+            TogglePlayPause();
+        }
+
+        // Update the state for next frame
+        wasSpacebarPressed = isSpacebarPressed;
     }
 
     // This runs when scene loads - automatically pause after reset
@@ -98,7 +111,6 @@ public class GameControl : MonoBehaviour
         {
             buttonText.text = isGamePaused ? "Play" : "Pause";
         }
-
         // For TextMeshPro Text
         if (buttonTMPText != null)
         {
@@ -111,7 +123,6 @@ public class GameControl : MonoBehaviour
     {
         // Set the static flag that we're resetting
         IsResetting = true;
-
         // Reload the current scene
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
