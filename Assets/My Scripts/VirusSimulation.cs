@@ -9,7 +9,7 @@ public class VirusSimulation : MonoBehaviour
     void Start()
     {
         // Get reference to the InfectedCountDisplay to update the infected count UI
-        infectedCountDisplay = FindObjectOfType<InfectedCountDisplay>();
+        infectedCountDisplay = FindFirstObjectByType<InfectedCountDisplay>();
     }
 
     void Update()

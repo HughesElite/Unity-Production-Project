@@ -8,7 +8,7 @@ public class ResetSceneButton : MonoBehaviour
     private void Start()
     {
         // Find the GameControl in the scene
-        gameControl = FindObjectOfType<GameControl>();
+        gameControl = FindFirstObjectByType<GameControl>();
 
         if (gameControl == null)
         {
