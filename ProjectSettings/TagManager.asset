@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - NPC
+  - NavMeshExclude
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - NavmeshExclude
   - Water
   - UI
   - 

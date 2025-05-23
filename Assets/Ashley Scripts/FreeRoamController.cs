@@ -89,25 +89,27 @@ public class FreeRoamController : MonoBehaviour
         // Move the camera
         transform.position += movement;
     }
-
-    void OnGUI()
-    {
-        // Only show controls when this camera is active
-        if (cam.enabled)
-        {
-            int y = 10;
-            int lineHeight = 20;
-            GUI.Label(new Rect(10, y, 400, lineHeight), "Free Roam Camera Controls:");
-            y += lineHeight;
-            GUI.Label(new Rect(10, y, 400, lineHeight), "WASD - Move horizontally");
-            y += lineHeight;
-            GUI.Label(new Rect(10, y, 400, lineHeight), "Q/E - Move down/up");
-            y += lineHeight;
-            GUI.Label(new Rect(10, y, 400, lineHeight), "Mouse - Look around");
-            y += lineHeight;
-            GUI.Label(new Rect(10, y, 400, lineHeight), "Shift - Move faster");
-            y += lineHeight;
-            GUI.Label(new Rect(10, y, 400, lineHeight), "C - Switch camera");
-        }
-    }
 }
+
+//    void OnGUI()
+//    {
+//        //    // Only show controls when this camera is active
+//        //    if (cam.enabled)
+//        //    {
+//        //        int y = 10;
+//        //        int lineHeight = 20;
+//        //        GUI.Label(new Rect(10, y, 400, lineHeight), "Free Roam Camera Controls:");
+//        //        y += lineHeight;
+//        //        GUI.Label(new Rect(10, y, 400, lineHeight), "WASD - Move horizontally");
+//        //        y += lineHeight;
+//        //        GUI.Label(new Rect(10, y, 400, lineHeight), "Q/E - Move down/up");
+//        //        y += lineHeight;
+//        //        GUI.Label(new Rect(10, y, 400, lineHeight), "Mouse - Look around");
+//        //        y += lineHeight;
+//        //        GUI.Label(new Rect(10, y, 400, lineHeight), "Shift - Move faster");
+//        //        y += lineHeight;
+//        //        GUI.Label(new Rect(10, y, 400, lineHeight), "C - Switch camera");
+//        //    }
+//        //}
+//    }
+//}
