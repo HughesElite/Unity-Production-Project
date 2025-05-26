@@ -1,58 +1,41 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro; // Include this if using TextMeshPro
+using TMPro;
+
 public class GameControl : MonoBehaviour
 {
-    private bool isGamePaused = true; // Start paused by default
-    // Reference to the play/pause button and its text
+    private bool isGamePaused = true;
     public Button playPauseButton;
-    // Reference to the button's text component (use appropriate type)
-    // For regular UI Text:
     public Text buttonText;
-    // OR for TextMeshPro:
     public TextMeshProUGUI buttonTMPText;
-    // Static property for scene reset state
     public static bool IsResetting { get; private set; } = false;
-    // Add this variable to track if spacebar was pressed last frame
-    private bool wasSpacebarPressed = false;
 
     private void Awake()
     {
-        // Initially pause the game
         Time.timeScale = 0f;
         isGamePaused = true;
     }
 
     private void Start()
     {
-        // Set up button click event
         if (playPauseButton != null)
         {
             playPauseButton.onClick.RemoveAllListeners();
             playPauseButton.onClick.AddListener(TogglePlayPause);
         }
-        // Update button text for initial state
         UpdateButtonText();
     }
 
-    // Add this Update method to check for spacebar input
     private void Update()
     {
-        // Check if spacebar is pressed
-        bool isSpacebarPressed = Input.GetKey(KeyCode.Space);
-
-        // Toggle only on the frame when spacebar is first pressed down
-        if (isSpacebarPressed && !wasSpacebarPressed)
+        // Optimized: Only check for key down event, not continuous key state
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             TogglePlayPause();
         }
-
-        // Update the state for next frame
-        wasSpacebarPressed = isSpacebarPressed;
     }
 
-    // This runs when scene loads - automatically pause after reset
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -65,7 +48,6 @@ public class GameControl : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // If we're resetting, pause the game after scene loads
         if (IsResetting)
         {
             PauseGame();
@@ -73,24 +55,20 @@ public class GameControl : MonoBehaviour
         }
     }
 
-    // Call this method to start the game
     public void StartGame()
     {
-        // Ensure the game is not paused
-        Time.timeScale = 1f; // Resumes game time
+        Time.timeScale = 1f;
         isGamePaused = false;
         UpdateButtonText();
     }
 
-    // Call this method to pause the game
     public void PauseGame()
     {
-        Time.timeScale = 0f; // Freezes game time
+        Time.timeScale = 0f;
         isGamePaused = true;
         UpdateButtonText();
     }
 
-    // Toggle between play and pause states
     public void TogglePlayPause()
     {
         if (isGamePaused)
@@ -103,32 +81,24 @@ public class GameControl : MonoBehaviour
         }
     }
 
-    // Updates the button's text based on game state
     private void UpdateButtonText()
     {
-        // For regular UI Text
+        string text = isGamePaused ? "Play" : "Pause";
+
         if (buttonText != null)
-        {
-            buttonText.text = isGamePaused ? "Play" : "Pause";
-        }
-        // For TextMeshPro Text
+            buttonText.text = text;
+
         if (buttonTMPText != null)
-        {
-            buttonTMPText.text = isGamePaused ? "Play" : "Pause";
-        }
+            buttonTMPText.text = text;
     }
 
-    // Method to reset the scene
     public void ResetScene()
     {
-        // Set the static flag that we're resetting
         IsResetting = true;
-        // Reload the current scene
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
     }
 
-    // This should be called by InfectedCountDisplay when the scene starts
     public static void FinishReset()
     {
         IsResetting = false;

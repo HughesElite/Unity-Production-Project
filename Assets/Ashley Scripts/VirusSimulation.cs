@@ -1,51 +1,80 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class VirusSimulation : MonoBehaviour
 {
-    public float infectionRadius = 2f;  // Distance at which NPCs become "infected"
-    public Color infectedColor = Color.black;  // Color when infected
+    public float infectionRadius = 2f;
+    public Color infectedColor = Color.black;
+    public float checkInterval = 0.1f; // Check every 0.1 seconds instead of every frame
+    public bool startInfected = false; // Check this for patient zero
+
     private InfectedCountDisplay infectedCountDisplay;
+    private static List<VirusSimulation> allNPCs = new List<VirusSimulation>();
+    private Renderer npcRenderer;
+    private bool isInfected = false;
+    private float nextCheckTime = 0f;
 
     void Start()
     {
-        // Get reference to the InfectedCountDisplay to update the infected count UI
         infectedCountDisplay = FindFirstObjectByType<InfectedCountDisplay>();
+        npcRenderer = GetComponent<Renderer>();
+
+        // Register this NPC
+        allNPCs.Add(this);
+
+        // Check if this NPC should start infected
+        if (startInfected)
+        {
+            InfectNPC();
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Unregister when destroyed to prevent memory leaks
+        allNPCs.Remove(this);
     }
 
     void Update()
     {
-        // Check the distance to other NPCs in the scene
-        NPCInfectedCheck();
+        // Only check at intervals, not every frame, and only if this NPC is infected
+        if (Time.time >= nextCheckTime && isInfected)
+        {
+            nextCheckTime = Time.time + checkInterval;
+            NPCInfectedCheck();
+        }
     }
 
     void NPCInfectedCheck()
     {
-        // Find all NPC objects in the scene with the "NPC" tag
-        GameObject[] allNPCs = GameObject.FindGameObjectsWithTag("NPC");
-
-        foreach (GameObject npc in allNPCs)
+        // If this NPC is infected, check if it can infect nearby NPCs
+        foreach (VirusSimulation otherNPC in allNPCs)
         {
-            // Skip checking the NPC itself
-            if (npc == gameObject)
-                continue;
+            if (otherNPC == this || otherNPC.isInfected == true)
+                continue; // Skip self and already infected NPCs
 
-            // Check if the NPC has already been infected by checking its color
-            Renderer npcRenderer = npc.GetComponent<Renderer>();
-            if (npcRenderer.material.color == infectedColor)
-                continue;  // Skip if NPC is already infected
+            float distance = Vector3.Distance(transform.position, otherNPC.transform.position);
 
-            // Get the distance between this NPC and the other NPC
-            float distance = Vector3.Distance(transform.position, npc.transform.position);
-
-            // If the distance is smaller than the infection radius, infect the NPC
             if (distance < infectionRadius)
             {
-                // Change color to infected color
-                npcRenderer.material.color = infectedColor;
-
-                // Update the infected count UI
-                infectedCountDisplay.IncreaseInfectedCount();
+                otherNPC.InfectNPC(); // Infect the OTHER NPC
             }
         }
+    }
+
+    void InfectNPC()
+    {
+        if (!isInfected)
+        {
+            isInfected = true;
+            npcRenderer.material.color = infectedColor;
+            infectedCountDisplay?.IncreaseInfectedCount();
+        }
+    }
+
+    // Public method to infect this NPC from external sources (like player contact)
+    public void ForceInfection()
+    {
+        InfectNPC();
     }
 }

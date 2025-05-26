@@ -42,15 +42,15 @@ public class SimpleCameraSwitcher : MonoBehaviour
         {
             case 1:
                 camera1.enabled = true;
-                Debug.Log("Switched to Camera 1");
+              //  Debug.Log("Switched to Camera 1");
                 break;
             case 2:
                 camera2.enabled = true;
-                Debug.Log("Switched to Camera 2");
+             //   Debug.Log("Switched to Camera 2");
                 break;
             case 3:
                 camera3.enabled = true;
-                Debug.Log("Switched to Camera 3");
+               // Debug.Log("Switched to Camera 3");
                 break;
         }
     }
