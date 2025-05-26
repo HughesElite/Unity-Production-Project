@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Unity.AI.Navigation;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -35,7 +37,6 @@ public class NavMeshExcluder : MonoBehaviour
     [ContextMenu("Apply NavMesh Exclusion")]
     public void ApplyNavMeshExclusion()
     {
-#if UNITY_EDITOR
         // Exclude this object
         ExcludeFromNavMesh(gameObject);
 
@@ -53,13 +54,11 @@ public class NavMeshExcluder : MonoBehaviour
 
         Debug.Log($"NavMesh exclusion applied to {gameObject.name}" +
                   (applyToChildren ? " and its children" : ""));
-#endif
     }
 
     [ContextMenu("Remove NavMesh Exclusion")]
     public void RemoveNavMeshExclusion()
     {
-#if UNITY_EDITOR
         // Re-enable this object for NavMesh
         IncludeInNavMesh(gameObject);
 
@@ -77,23 +76,21 @@ public class NavMeshExcluder : MonoBehaviour
 
         Debug.Log($"NavMesh exclusion removed from {gameObject.name}" +
                   (applyToChildren ? " and its children" : ""));
-#endif
     }
 
     void ExcludeFromNavMesh(GameObject obj)
     {
 #if UNITY_EDITOR
-        // Get the current static flags
-        StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(obj);
+        // Method 1: Use NavMeshModifier component (recommended)
+        NavMeshModifier modifier = obj.GetComponent<NavMeshModifier>();
+        if (modifier == null)
+        {
+            modifier = obj.AddComponent<NavMeshModifier>();
+        }
+        modifier.overrideArea = true;
+        modifier.area = 1; // 1 = Not Walkable
 
-        // Remove Navigation Static flag
-        flags &= ~StaticEditorFlags.NavigationStatic;
-
-        // Apply the updated flags
-        GameObjectUtility.SetStaticEditorFlags(obj, flags);
-
-        // Alternative method: Set the Navigation Area to "Not Walkable" (1)
-        // This requires the object to be Navigation Static
+        // Method 2: Set Navigation Area directly
         SerializedObject serializedObject = new SerializedObject(obj);
         SerializedProperty navMeshArea = serializedObject.FindProperty("m_NavMeshArea");
         if (navMeshArea != null)
@@ -107,14 +104,12 @@ public class NavMeshExcluder : MonoBehaviour
     void IncludeInNavMesh(GameObject obj)
     {
 #if UNITY_EDITOR
-        // Get the current static flags
-        StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(obj);
-
-        // Add Navigation Static flag
-        flags |= StaticEditorFlags.NavigationStatic;
-
-        // Apply the updated flags
-        GameObjectUtility.SetStaticEditorFlags(obj, flags);
+        // Remove NavMeshModifier if it exists
+        NavMeshModifier modifier = obj.GetComponent<NavMeshModifier>();
+        if (modifier != null)
+        {
+            DestroyImmediate(modifier);
+        }
 
         // Set the Navigation Area back to "Walkable" (0)
         SerializedObject serializedObject = new SerializedObject(obj);

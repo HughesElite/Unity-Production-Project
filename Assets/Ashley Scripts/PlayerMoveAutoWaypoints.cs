@@ -44,7 +44,7 @@ public class PlayerMoveAutoWaypoints : MonoBehaviour
             targetObjects[i] = waypointObjects[i].transform;
         }
 
-        Debug.Log($"Found {targetObjects.Length} waypoints with tag '{waypointTag}'");
+       // Debug.Log($"Found {targetObjects.Length} waypoints with tag '{waypointTag}'");
 
         // Warning if no waypoints found
         if (targetObjects.Length == 0)
