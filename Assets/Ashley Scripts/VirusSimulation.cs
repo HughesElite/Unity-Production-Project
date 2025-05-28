@@ -8,7 +8,6 @@ public class VirusSimulation : MonoBehaviour
     public float checkInterval = 0.1f; // Check every 0.1 seconds instead of every frame
     public bool startInfected = false; // Check this for patient zero
 
-    private InfectedCountDisplay infectedCountDisplay;
     private static List<VirusSimulation> allNPCs = new List<VirusSimulation>();
     private Renderer npcRenderer;
     private bool isInfected = false;
@@ -16,7 +15,6 @@ public class VirusSimulation : MonoBehaviour
 
     void Start()
     {
-        infectedCountDisplay = FindFirstObjectByType<InfectedCountDisplay>();
         npcRenderer = GetComponent<Renderer>();
 
         // Register this NPC
@@ -54,7 +52,6 @@ public class VirusSimulation : MonoBehaviour
                 continue; // Skip self and already infected NPCs
 
             float distance = Vector3.Distance(transform.position, otherNPC.transform.position);
-
             if (distance < infectionRadius)
             {
                 otherNPC.InfectNPC(); // Infect the OTHER NPC
@@ -68,7 +65,6 @@ public class VirusSimulation : MonoBehaviour
         {
             isInfected = true;
             npcRenderer.material.color = infectedColor;
-            infectedCountDisplay?.IncreaseInfectedCount();
         }
     }
 
