@@ -19,11 +19,18 @@ public class MouseFadeUI : MonoBehaviour
     [Header("First Click Behavior")]
     public bool waitForFirstClick = true; // Stay visible until first button click
 
+    [Header("Inactivity Settings")]
+    public float inactivityDelay = 2f; // Seconds of no mouse movement before fading
+    public bool fadeOnInactivity = true; // Fade after mouse stops moving
+
     private bool isMouseInArea = false;
     private bool isUIVisible = true;
     private bool hasBeenClicked = false;
+    private bool isFadedFromInactivity = false;
     private Coroutine fadeCoroutine;
+    private Coroutine inactivityCoroutine;
     private Button[] allButtons;
+    private Vector3 lastMousePosition;
 
     private void Start()
     {
@@ -34,6 +41,8 @@ public class MouseFadeUI : MonoBehaviour
         uiCanvasGroup.alpha = visibleAlpha;
         isUIVisible = true;
         hasBeenClicked = false;
+        isFadedFromInactivity = false;
+        lastMousePosition = Input.mousePosition;
 
         // Find all buttons in this UI group and add listeners
         if (waitForFirstClick)
@@ -78,7 +87,33 @@ public class MouseFadeUI : MonoBehaviour
         if (waitForFirstClick && !hasBeenClicked)
             return;
 
-        CheckMousePosition();
+        // Check for mouse movement
+        Vector3 currentMousePosition = Input.mousePosition;
+        bool mouseHasMoved = Vector3.Distance(currentMousePosition, lastMousePosition) > 1f; // Small threshold to ignore tiny movements
+
+        if (mouseHasMoved)
+        {
+            lastMousePosition = currentMousePosition;
+
+            // If UI was faded from inactivity, show it again when mouse moves
+            if (isFadedFromInactivity)
+            {
+                isFadedFromInactivity = false;
+                ShowUI();
+            }
+
+            // Restart inactivity timer
+            if (fadeOnInactivity && hasBeenClicked)
+            {
+                RestartInactivityTimer();
+            }
+        }
+
+        // Normal mouse area checking (unless faded from inactivity)
+        if (!isFadedFromInactivity)
+        {
+            CheckMousePosition();
+        }
     }
 
     private void CheckMousePosition()
@@ -123,6 +158,29 @@ public class MouseFadeUI : MonoBehaviour
         isUIVisible = false;
     }
 
+    private void RestartInactivityTimer()
+    {
+        // Stop existing inactivity timer
+        if (inactivityCoroutine != null)
+            StopCoroutine(inactivityCoroutine);
+
+        // Start new inactivity timer
+        inactivityCoroutine = StartCoroutine(InactivityTimer());
+    }
+
+    private IEnumerator InactivityTimer()
+    {
+        yield return new WaitForSecondsRealtime(inactivityDelay);
+
+        // After delay, fade UI due to inactivity
+        if (isUIVisible)
+        {
+            isFadedFromInactivity = true;
+            HideUI();
+            Debug.Log("UI faded due to mouse inactivity");
+        }
+    }
+
     private IEnumerator FadeToAlpha(float targetAlpha)
     {
         float startAlpha = uiCanvasGroup.alpha;
@@ -143,7 +201,15 @@ public class MouseFadeUI : MonoBehaviour
     public void ResetFirstClickState()
     {
         hasBeenClicked = false;
+        isFadedFromInactivity = false;
         ShowUI(); // Show UI again
+
+        // Stop inactivity timer
+        if (inactivityCoroutine != null)
+        {
+            StopCoroutine(inactivityCoroutine);
+            inactivityCoroutine = null;
+        }
 
         if (waitForFirstClick)
         {
