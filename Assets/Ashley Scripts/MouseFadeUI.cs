@@ -15,20 +15,27 @@ public class MouseFadeUI : MonoBehaviour
     public float fadeDuration = 0.3f; // How long fade takes
     public float visibleAlpha = 1f; // Fully visible
     public float hiddenAlpha = 0.1f; // Almost invisible when hidden
+    [Tooltip("Disable button interactions when UI is faded")]
+    public bool disableButtonsWhenFaded = true; // NEW: Option to disable buttons
 
     [Header("First Click Behavior")]
     public bool waitForFirstClick = true; // Stay visible until first button click
+    [Tooltip("Time to wait after button click before fade behavior starts")]
+    public float delayAfterButtonClick = 1f; // NEW: Delay after button click
 
     [Header("Inactivity Settings")]
-    public float inactivityDelay = 2f; // Seconds of no mouse movement before fading
     public bool fadeOnInactivity = true; // Fade after mouse stops moving
+    [Tooltip("Time of no mouse movement before UI fades")]
+    public float inactivityFadeDelay = 2f; // RENAMED: Clearer name for mouse inactivity
 
     private bool isMouseInArea = false;
     private bool isUIVisible = true;
     private bool hasBeenClicked = false;
     private bool isFadedFromInactivity = false;
+    private bool fadeSystemActive = false; // NEW: Track if fade system is active
     private Coroutine fadeCoroutine;
     private Coroutine inactivityCoroutine;
+    private Coroutine buttonClickDelayCoroutine; // NEW: For button click delay
     private Button[] allButtons;
     private Vector3 lastMousePosition;
 
@@ -37,17 +44,25 @@ public class MouseFadeUI : MonoBehaviour
         if (uiCanvasGroup == null)
             uiCanvasGroup = GetComponent<CanvasGroup>();
 
-        // Always start visible
+        // Always start visible and interactable
         uiCanvasGroup.alpha = visibleAlpha;
+        uiCanvasGroup.interactable = true;
+        uiCanvasGroup.blocksRaycasts = true;
         isUIVisible = true;
         hasBeenClicked = false;
         isFadedFromInactivity = false;
+        fadeSystemActive = false;
         lastMousePosition = Input.mousePosition;
 
         // Find all buttons in this UI group and add listeners
         if (waitForFirstClick)
         {
             SetupButtonListeners();
+        }
+        else
+        {
+            // If not waiting for first click, activate fade system immediately
+            fadeSystemActive = true;
         }
     }
 
@@ -68,7 +83,7 @@ public class MouseFadeUI : MonoBehaviour
         if (waitForFirstClick && !hasBeenClicked)
         {
             hasBeenClicked = true;
-            Debug.Log("First button clicked - UI fade behavior now active");
+            Debug.Log($"First button clicked - UI fade behavior will start in {delayAfterButtonClick} seconds");
 
             // Remove the click listeners since we don't need them anymore
             foreach (Button button in allButtons)
@@ -76,15 +91,35 @@ public class MouseFadeUI : MonoBehaviour
                 button.onClick.RemoveListener(OnAnyButtonClicked);
             }
 
-            // Immediately check mouse position after first click
-            CheckMousePosition();
+            // Start delay before activating fade system
+            if (buttonClickDelayCoroutine != null)
+                StopCoroutine(buttonClickDelayCoroutine);
+
+            buttonClickDelayCoroutine = StartCoroutine(ButtonClickDelayTimer());
+        }
+    }
+
+    // NEW: Coroutine to handle delay after button click
+    private IEnumerator ButtonClickDelayTimer()
+    {
+        yield return new WaitForSecondsRealtime(delayAfterButtonClick);
+
+        // Activate the fade system
+        fadeSystemActive = true;
+        Debug.Log("UI fade behavior now active");
+
+        // Immediately check mouse position and start inactivity timer
+        CheckMousePosition();
+        if (fadeOnInactivity)
+        {
+            RestartInactivityTimer();
         }
     }
 
     private void Update()
     {
-        // Only check mouse position after first button click (if enabled)
-        if (waitForFirstClick && !hasBeenClicked)
+        // Only proceed if fade system is active
+        if (!fadeSystemActive)
             return;
 
         // Check for mouse movement
@@ -103,7 +138,7 @@ public class MouseFadeUI : MonoBehaviour
             }
 
             // Restart inactivity timer
-            if (fadeOnInactivity && hasBeenClicked)
+            if (fadeOnInactivity)
             {
                 RestartInactivityTimer();
             }
@@ -147,6 +182,13 @@ public class MouseFadeUI : MonoBehaviour
 
         fadeCoroutine = StartCoroutine(FadeToAlpha(visibleAlpha));
         isUIVisible = true;
+
+        // Enable button interactions when showing UI
+        if (disableButtonsWhenFaded)
+        {
+            uiCanvasGroup.interactable = true;
+            uiCanvasGroup.blocksRaycasts = true;
+        }
     }
 
     private void HideUI()
@@ -156,6 +198,13 @@ public class MouseFadeUI : MonoBehaviour
 
         fadeCoroutine = StartCoroutine(FadeToAlpha(hiddenAlpha));
         isUIVisible = false;
+
+        // Disable button interactions when hiding UI
+        if (disableButtonsWhenFaded)
+        {
+            uiCanvasGroup.interactable = false;
+            uiCanvasGroup.blocksRaycasts = false;
+        }
     }
 
     private void RestartInactivityTimer()
@@ -170,14 +219,14 @@ public class MouseFadeUI : MonoBehaviour
 
     private IEnumerator InactivityTimer()
     {
-        yield return new WaitForSecondsRealtime(inactivityDelay);
+        yield return new WaitForSecondsRealtime(inactivityFadeDelay); // UPDATED: Use new variable name
 
         // After delay, fade UI due to inactivity
         if (isUIVisible)
         {
             isFadedFromInactivity = true;
             HideUI();
-            Debug.Log("UI faded due to mouse inactivity");
+            Debug.Log($"UI faded due to {inactivityFadeDelay} seconds of mouse inactivity");
         }
     }
 
@@ -202,18 +251,29 @@ public class MouseFadeUI : MonoBehaviour
     {
         hasBeenClicked = false;
         isFadedFromInactivity = false;
-        ShowUI(); // Show UI again
+        fadeSystemActive = false;
+        ShowUI(); // Show UI again (this will also enable interactions if needed)
 
-        // Stop inactivity timer
+        // Stop all timers
         if (inactivityCoroutine != null)
         {
             StopCoroutine(inactivityCoroutine);
             inactivityCoroutine = null;
         }
 
+        if (buttonClickDelayCoroutine != null)
+        {
+            StopCoroutine(buttonClickDelayCoroutine);
+            buttonClickDelayCoroutine = null;
+        }
+
         if (waitForFirstClick)
         {
             SetupButtonListeners();
+        }
+        else
+        {
+            fadeSystemActive = true;
         }
     }
 
