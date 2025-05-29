@@ -9,6 +9,11 @@ public class ExclusiveButtonGroup : MonoBehaviour
     public Button mildButton;
     public Button coldButton;
 
+    [Header("Icon References")]
+    public Image hotIcon;
+    public Image mildIcon;
+    public Image coldIcon;
+
     [Header("Description Text References")]
     public TextMeshProUGUI hotDescriptionText;
     public TextMeshProUGUI mildDescriptionText;
@@ -71,6 +76,9 @@ public class ExclusiveButtonGroup : MonoBehaviour
         // Initialize all text to unselected state
         InitializeDescriptionTexts();
 
+        // Initialize all icons to hidden state
+        HideAllIcons();
+
         // Set default selection
         SelectButton(defaultSelected);
     }
@@ -94,6 +102,35 @@ public class ExclusiveButtonGroup : MonoBehaviour
         {
             coldDescriptionText.text = defaultUnselectedText;
             coldDescriptionText.color = unselectedTextColor;
+        }
+    }
+
+    private void HideAllIcons()
+    {
+        if (hotIcon != null) hotIcon.gameObject.SetActive(false);
+        if (mildIcon != null) mildIcon.gameObject.SetActive(false);
+        if (coldIcon != null) coldIcon.gameObject.SetActive(false);
+    }
+
+    private void ShowIcon(ButtonType buttonType)
+    {
+        // Hide all icons first
+        HideAllIcons();
+
+        // Show the selected icon
+        switch (buttonType)
+        {
+            case ButtonType.Hot:
+                if (hotIcon != null) hotIcon.gameObject.SetActive(true);
+                break;
+
+            case ButtonType.Mild:
+                if (mildIcon != null) mildIcon.gameObject.SetActive(true);
+                break;
+
+            case ButtonType.Cold:
+                if (coldIcon != null) coldIcon.gameObject.SetActive(true);
+                break;
         }
     }
 
@@ -142,6 +179,9 @@ public class ExclusiveButtonGroup : MonoBehaviour
         }
 
         currentSelected = buttonType;
+
+        // Show appropriate icon
+        ShowIcon(buttonType);
 
         // Debug feedback
         Debug.Log($"Selected: {buttonType}");
