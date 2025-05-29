@@ -68,6 +68,12 @@ public class FreeRoamMovement : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
+        // Debug to see if input is working
+        if (mouseX != 0 || mouseY != 0)
+        {
+            Debug.Log($"Mouse Input: X={mouseX:F2}, Y={mouseY:F2}");
+        }
+
         yaw += mouseX;
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, -90f, 90f);
@@ -77,13 +83,26 @@ public class FreeRoamMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        // Get input
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        // Use direct key checks instead of Input.GetAxis() which doesn't work when paused
+        float horizontal = 0f;
+        float vertical = 0f;
         float upDown = 0f;
 
+        // WASD movement using direct key checks
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) horizontal = 1f;
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) horizontal = -1f;
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) vertical = 1f;
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) vertical = -1f;
+
+        // Up/Down movement
         if (Input.GetKey(upKey)) upDown = 1f;
         if (Input.GetKey(downKey)) upDown = -1f;
+
+        // Debug to see if input is working
+        if (horizontal != 0 || vertical != 0 || upDown != 0)
+        {
+            Debug.Log($"Movement Input: H={horizontal:F2}, V={vertical:F2}, UpDown={upDown:F2}");
+        }
 
         // Calculate movement direction
         Vector3 moveDir = transform.right * horizontal +
@@ -107,12 +126,12 @@ public class FreeRoamMovement : MonoBehaviour
                 ref currentVelocity,
                 smoothTime
             );
-            transform.position += smoothVelocity * Time.deltaTime;
+            transform.position += smoothVelocity * Time.unscaledDeltaTime; // Use unscaled time
         }
         else
         {
             // Direct movement
-            Vector3 movement = moveDir * currentSpeed * Time.deltaTime;
+            Vector3 movement = moveDir * currentSpeed * Time.unscaledDeltaTime; // Use unscaled time
             transform.position += movement;
         }
     }
