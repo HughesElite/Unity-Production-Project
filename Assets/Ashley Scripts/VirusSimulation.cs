@@ -43,20 +43,34 @@ public class VirusSimulation : MonoBehaviour
         // Store original color
         originalColor = npcRenderer.material.color;
 
-        // Register this NPC
-        allNPCs.Add(this);
-
         // Set initial color
         if (!resetToOriginalColor)
         {
             npcRenderer.material.color = healthyColor;
         }
 
-        // Check if this NPC should start infected
-        if (startInfected)
+        // Check if this NPC should start infected (only if active)
+        if (startInfected && gameObject.activeInHierarchy)
         {
             InfectNPC();
         }
+    }
+
+    void OnEnable()
+    {
+        // Register this NPC when activated
+        if (!allNPCs.Contains(this))
+        {
+            allNPCs.Add(this);
+            Debug.Log($"{gameObject.name} added to simulation (Total active: {allNPCs.Count})");
+        }
+    }
+
+    void OnDisable()
+    {
+        // Unregister when deactivated to prevent ghost infections
+        allNPCs.Remove(this);
+        Debug.Log($"{gameObject.name} removed from simulation (Total active: {allNPCs.Count})");
     }
 
     void OnDestroy()
@@ -67,6 +81,9 @@ public class VirusSimulation : MonoBehaviour
 
     void Update()
     {
+        // Only process if this GameObject is active
+        if (!gameObject.activeInHierarchy) return;
+
         // Check for infection spreading (only if this NPC is infected)
         if (Time.time >= nextCheckTime && currentState == NPCState.Infected)
         {
@@ -86,7 +103,8 @@ public class VirusSimulation : MonoBehaviour
         // If this NPC is infected, check if it can infect nearby NPCs
         foreach (VirusSimulation otherNPC in allNPCs)
         {
-            if (otherNPC == this || !CanBeInfected(otherNPC))
+            // Skip self, inactive NPCs, and NPCs that can't be infected
+            if (otherNPC == this || !otherNPC.gameObject.activeInHierarchy || !CanBeInfected(otherNPC))
                 continue;
 
             float distance = Vector3.Distance(transform.position, otherNPC.transform.position);
@@ -108,6 +126,9 @@ public class VirusSimulation : MonoBehaviour
 
     bool CanBeInfected(VirusSimulation npc)
     {
+        // Can't infect inactive NPCs
+        if (!npc.gameObject.activeInHierarchy) return false;
+
         // Can only infect healthy NPCs, or recovered NPCs if immunity is disabled
         if (npc.currentState == NPCState.Healthy)
             return true;
@@ -205,13 +226,13 @@ public class VirusSimulation : MonoBehaviour
         return Mathf.Max(0f, timeRemaining);
     }
 
-    // Static methods for getting overall statistics
+    // Static methods for getting overall statistics (only count active NPCs)
     public static int GetHealthyCount()
     {
         int count = 0;
         foreach (var npc in allNPCs)
         {
-            if (npc.IsHealthy()) count++;
+            if (npc.gameObject.activeInHierarchy && npc.IsHealthy()) count++;
         }
         return count;
     }
@@ -221,7 +242,7 @@ public class VirusSimulation : MonoBehaviour
         int count = 0;
         foreach (var npc in allNPCs)
         {
-            if (npc.IsInfected()) count++;
+            if (npc.gameObject.activeInHierarchy && npc.IsInfected()) count++;
         }
         return count;
     }
@@ -231,19 +252,39 @@ public class VirusSimulation : MonoBehaviour
         int count = 0;
         foreach (var npc in allNPCs)
         {
-            if (npc.IsRecovered()) count++;
+            if (npc.gameObject.activeInHierarchy && npc.IsRecovered()) count++;
         }
         return count;
     }
 
     public static int GetTotalNPCCount()
     {
-        return allNPCs.Count;
+        // Only count active NPCs
+        int count = 0;
+        foreach (var npc in allNPCs)
+        {
+            if (npc.gameObject.activeInHierarchy) count++;
+        }
+        return count;
     }
 
     public static List<VirusSimulation> GetAllNPCs()
     {
         return new List<VirusSimulation>(allNPCs); // Return copy to prevent external modification
+    }
+
+    // Get only active NPCs
+    public static List<VirusSimulation> GetActiveNPCs()
+    {
+        List<VirusSimulation> activeNPCs = new List<VirusSimulation>();
+        foreach (var npc in allNPCs)
+        {
+            if (npc.gameObject.activeInHierarchy)
+            {
+                activeNPCs.Add(npc);
+            }
+        }
+        return activeNPCs;
     }
 
     // Reset all NPCs to healthy (useful for simulation reset)
@@ -254,6 +295,21 @@ public class VirusSimulation : MonoBehaviour
             npc.ResetToHealthy();
         }
         Debug.Log("All NPCs reset to healthy state");
+    }
+
+    // Reset only active NPCs to healthy
+    public static void ResetActiveNPCs()
+    {
+        int resetCount = 0;
+        foreach (var npc in allNPCs)
+        {
+            if (npc.gameObject.activeInHierarchy)
+            {
+                npc.ResetToHealthy();
+                resetCount++;
+            }
+        }
+        Debug.Log($"{resetCount} active NPCs reset to healthy state");
     }
 
     // Manual infection controls (for testing/debugging)

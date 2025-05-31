@@ -16,6 +16,9 @@ public class VirusStatsDisplay : MonoBehaviour
     [Header("Update Settings")]
     public float updateInterval = 0.1f; // How often to update the display (seconds)
 
+    [Header("Population Reference")]
+    public NPCPopulationController populationController; // Reference to get active population count
+
     [Header("Display Format")]
     public DisplayStyle displayStyle = DisplayStyle.Detailed;
     public string customFormat = "Infected: {infected}/{total}";
@@ -44,6 +47,12 @@ public class VirusStatsDisplay : MonoBehaviour
             return;
         }
 
+        // Auto-find population controller if not assigned
+        if (populationController == null)
+        {
+            populationController = FindFirstObjectByType<NPCPopulationController>();
+        }
+
         // Initial update
         UpdateStatsDisplay();
     }
@@ -60,11 +69,22 @@ public class VirusStatsDisplay : MonoBehaviour
 
     void UpdateStatsDisplay()
     {
-        // Get current statistics from VirusSimulation
-        int healthy = VirusSimulation.GetHealthyCount();
-        int infected = VirusSimulation.GetInfectedCount();
-        int recovered = VirusSimulation.GetRecoveredCount();
-        int total = VirusSimulation.GetTotalNPCCount();
+        // Get current statistics by counting only active NPCs
+        int healthy, infected, recovered, total;
+
+        if (populationController != null)
+        {
+            // Count only active NPCs
+            CountActiveNPCs(out healthy, out infected, out recovered, out total);
+        }
+        else
+        {
+            // Fallback to VirusSimulation counts (all NPCs)
+            healthy = VirusSimulation.GetHealthyCount();
+            infected = VirusSimulation.GetInfectedCount();
+            recovered = VirusSimulation.GetRecoveredCount();
+            total = VirusSimulation.GetTotalNPCCount();
+        }
 
         // Generate display text based on selected style
         string displayText = GetFormattedText(healthy, infected, recovered, total);
@@ -73,6 +93,38 @@ public class VirusStatsDisplay : MonoBehaviour
         if (statsText != null)
         {
             statsText.text = displayText;
+        }
+    }
+
+    void CountActiveNPCs(out int healthy, out int infected, out int recovered, out int total)
+    {
+        healthy = 0;
+        infected = 0;
+        recovered = 0;
+        total = 0;
+
+        // Find all NPCs with the NPC tag
+        GameObject[] allNPCs = GameObject.FindGameObjectsWithTag("NPC");
+
+        foreach (GameObject npc in allNPCs)
+        {
+            // Only count active NPCs
+            if (npc.activeInHierarchy)
+            {
+                total++;
+
+                // Get the VirusSimulation component to check state
+                VirusSimulation virusScript = npc.GetComponent<VirusSimulation>();
+                if (virusScript != null)
+                {
+                    if (virusScript.IsHealthy())
+                        healthy++;
+                    else if (virusScript.IsInfected())
+                        infected++;
+                    else if (virusScript.IsRecovered())
+                        recovered++;
+                }
+            }
         }
     }
 
@@ -144,7 +196,6 @@ public class VirusStatsDisplay : MonoBehaviour
         if (showHealthy) parts.Add($"H:{healthy}");
         if (showInfected) parts.Add($"I:{infected}");
         if (showRecovered) parts.Add($"R:{recovered}");
-       
 
         return string.Join("\n", parts);
     }
@@ -156,6 +207,7 @@ public class VirusStatsDisplay : MonoBehaviour
             .Replace("{healthy}", healthy.ToString())
             .Replace("{infected}", infected.ToString())
             .Replace("{recovered}", recovered.ToString())
+            .Replace("{total}", total.ToString())
             .Replace("{infected_percent}", total > 0 ? (infected * 100f / total).ToString("F0") : "0")
             .Replace("{healthy_percent}", total > 0 ? (healthy * 100f / total).ToString("F0") : "0")
             .Replace("{recovered_percent}", total > 0 ? (recovered * 100f / total).ToString("F0") : "0");

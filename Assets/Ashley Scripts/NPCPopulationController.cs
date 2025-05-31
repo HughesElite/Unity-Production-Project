@@ -21,6 +21,10 @@ public class NPCPopulationController : MonoBehaviour
     public int maxPopulation = 50;
     public int defaultPopulation = 10;
 
+    [Header("Smart Population Management")]
+    [Tooltip("When enabled, prioritizes keeping infected NPCs active when changing population")]
+    public bool smartPopulationManagement = true;
+
     [Header("Reset Integration")]
     public NPCResetManager resetManager; // Drag your reset manager here
     public UIResetManager uiResetManager; // Drag your UI reset manager here
@@ -135,14 +139,15 @@ public class NPCPopulationController : MonoBehaviour
         // Ensure we don't exceed available NPCs
         int actualPopulation = Mathf.Min(targetPopulation, allNPCs.Length);
 
-        // Enable/disable NPCs
-        for (int i = 0; i < allNPCs.Length; i++)
+        // Choose population management method
+        if (smartPopulationManagement && !autoResetOnPopulationChange)
         {
-            if (allNPCs[i] != null)
-            {
-                bool shouldBeActive = i < actualPopulation;
-                allNPCs[i].SetActive(shouldBeActive);
-            }
+            SetPopulationSmart(actualPopulation);
+        }
+        else
+        {
+            // Use original simple method when auto-reset is enabled or smart management is disabled
+            SetPopulationSimple(actualPopulation);
         }
 
         currentPopulation = actualPopulation;
@@ -161,6 +166,119 @@ public class NPCPopulationController : MonoBehaviour
         if (uiResetManager != null)
         {
             uiResetManager.ResetStatistics(); // This will update PopulationCounter and VirusStatsDisplay
+        }
+    }
+
+    private void SetPopulationSimple(int actualPopulation)
+    {
+        // Original simple method: enable first N NPCs
+        for (int i = 0; i < allNPCs.Length; i++)
+        {
+            if (allNPCs[i] != null)
+            {
+                bool shouldBeActive = i < actualPopulation;
+                allNPCs[i].SetActive(shouldBeActive);
+            }
+        }
+    }
+
+    private void SetPopulationSmart(int actualPopulation)
+    {
+        // Smart method: prioritize keeping infected NPCs active
+        System.Collections.Generic.List<GameObject> infectedNPCs = new System.Collections.Generic.List<GameObject>();
+        System.Collections.Generic.List<GameObject> recoveredNPCs = new System.Collections.Generic.List<GameObject>();
+        System.Collections.Generic.List<GameObject> healthyNPCs = new System.Collections.Generic.List<GameObject>();
+
+        // Categorize all NPCs by their current state
+        foreach (GameObject npc in allNPCs)
+        {
+            if (npc != null)
+            {
+                VirusSimulation virusScript = npc.GetComponent<VirusSimulation>();
+                if (virusScript != null)
+                {
+                    if (virusScript.IsInfected())
+                    {
+                        infectedNPCs.Add(npc);
+                    }
+                    else if (virusScript.IsRecovered())
+                    {
+                        recoveredNPCs.Add(npc);
+                    }
+                    else
+                    {
+                        healthyNPCs.Add(npc);
+                    }
+                }
+                else
+                {
+                    // No virus script, assume healthy
+                    healthyNPCs.Add(npc);
+                }
+            }
+        }
+
+        // First, deactivate all NPCs
+        foreach (GameObject npc in allNPCs)
+        {
+            if (npc != null)
+                npc.SetActive(false);
+        }
+
+        int slotsRemaining = actualPopulation;
+        int infectedKept = 0;
+        int recoveredKept = 0;
+        int healthyKept = 0;
+
+        // Priority 1: Keep infected NPCs (up to population limit)
+        foreach (GameObject npc in infectedNPCs)
+        {
+            if (slotsRemaining > 0)
+            {
+                npc.SetActive(true);
+                slotsRemaining--;
+                infectedKept++;
+            }
+        }
+
+        // Priority 2: Keep recovered NPCs
+        foreach (GameObject npc in recoveredNPCs)
+        {
+            if (slotsRemaining > 0)
+            {
+                npc.SetActive(true);
+                slotsRemaining--;
+                recoveredKept++;
+            }
+        }
+
+        // Priority 3: Fill remaining slots with healthy NPCs
+        foreach (GameObject npc in healthyNPCs)
+        {
+            if (slotsRemaining > 0)
+            {
+                npc.SetActive(true);
+                slotsRemaining--;
+                healthyKept++;
+            }
+        }
+
+        // Log the smart allocation results
+        if (infectedNPCs.Count > 0 || recoveredNPCs.Count > 0)
+        {
+            string smartMessage = $"Smart population allocation: {infectedKept}/{infectedNPCs.Count} infected, " +
+                                 $"{recoveredKept}/{recoveredNPCs.Count} recovered, {healthyKept} healthy";
+
+            if (infectedNPCs.Count > actualPopulation)
+            {
+                int droppedInfected = infectedNPCs.Count - infectedKept;
+                smartMessage += $" (WARNING: {droppedInfected} infected NPCs deactivated due to population limit)";
+                Debug.LogWarning(smartMessage);
+            }
+            else
+            {
+                Debug.Log(smartMessage);
+            }
         }
     }
 
@@ -211,5 +329,42 @@ public class NPCPopulationController : MonoBehaviour
     public int GetCurrentPopulation()
     {
         return currentPopulation;
+    }
+
+    // Toggle smart population management at runtime
+    public void SetSmartPopulationManagement(bool enabled)
+    {
+        smartPopulationManagement = enabled;
+        Debug.Log($"Smart population management: {(enabled ? "Enabled" : "Disabled")}");
+    }
+
+    // Get statistics about current NPC states for debugging
+    [ContextMenu("Log NPC Distribution")]
+    public void LogNPCDistribution()
+    {
+        if (allNPCs == null) return;
+
+        int activeCount = 0, infectedCount = 0, recoveredCount = 0, healthyCount = 0;
+
+        foreach (GameObject npc in allNPCs)
+        {
+            if (npc != null && npc.activeInHierarchy)
+            {
+                activeCount++;
+                VirusSimulation virusScript = npc.GetComponent<VirusSimulation>();
+                if (virusScript != null)
+                {
+                    if (virusScript.IsInfected()) infectedCount++;
+                    else if (virusScript.IsRecovered()) recoveredCount++;
+                    else healthyCount++;
+                }
+                else
+                {
+                    healthyCount++;
+                }
+            }
+        }
+
+        Debug.Log($"Active NPCs: {activeCount} (Infected: {infectedCount}, Recovered: {recoveredCount}, Healthy: {healthyCount})");
     }
 }
