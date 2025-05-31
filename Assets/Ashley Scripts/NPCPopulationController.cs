@@ -23,6 +23,7 @@ public class NPCPopulationController : MonoBehaviour
 
     [Header("Reset Integration")]
     public NPCResetManager resetManager; // Drag your reset manager here
+    public UIResetManager uiResetManager; // Drag your UI reset manager here
     public bool autoResetOnPopulationChange = true; // Auto-reset when population changes
 
     private GameObject[] allNPCs;
@@ -41,10 +42,15 @@ public class NPCPopulationController : MonoBehaviour
             allNPCs = npcObjects;
         }
 
-        // Auto-find reset manager if not assigned
+        // Auto-find reset managers if not assigned
         if (resetManager == null)
         {
             resetManager = FindFirstObjectByType<NPCResetManager>();
+        }
+
+        if (uiResetManager == null)
+        {
+            uiResetManager = FindFirstObjectByType<UIResetManager>();
         }
 
         // Validate we have enough NPCs
@@ -92,10 +98,21 @@ public class NPCPopulationController : MonoBehaviour
             SetPopulation(clampedPopulation);
 
             // Auto-reset if enabled
-            if (autoResetOnPopulationChange && resetManager != null)
+            if (autoResetOnPopulationChange)
             {
-                resetManager.ResetAllNPCs();
-                Debug.Log($"Auto-reset triggered for population of {clampedPopulation}");
+                // Reset NPCs (positions and virus states)
+                if (resetManager != null)
+                {
+                    resetManager.ResetAllNPCs();
+                    Debug.Log($"NPC reset triggered for population of {clampedPopulation}");
+                }
+
+                // Reset UI displays
+                if (uiResetManager != null)
+                {
+                    uiResetManager.ResetStatistics(); // Only reset the stats, not everything
+                    Debug.Log($"UI reset triggered for population of {clampedPopulation}");
+                }
             }
         }
         else
@@ -139,6 +156,12 @@ public class NPCPopulationController : MonoBehaviour
 
         UpdateFeedbackText(message, Color.white);
         Debug.Log(message);
+
+        // Force update UI displays immediately after population change
+        if (uiResetManager != null)
+        {
+            uiResetManager.ResetStatistics(); // This will update PopulationCounter and VirusStatsDisplay
+        }
     }
 
     private void UpdateInputFieldText(string text)

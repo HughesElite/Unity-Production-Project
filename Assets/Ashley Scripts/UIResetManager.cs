@@ -12,6 +12,8 @@ public class UIResetManager : MonoBehaviour
     public PeakInfectionTracker peakInfectionTracker;
     public InfectionRateTracker infectionRateTracker;
     public PopulationCounter populationCounter;
+    public VirusStatsDisplay virusStatsDisplay;
+    public OutbreakStatusTracker outbreakStatusTracker;
     public NPCPopulationController populationController;
 
     [Header("Reset Settings")]
@@ -76,6 +78,12 @@ public class UIResetManager : MonoBehaviour
         if (populationCounter == null)
             populationCounter = FindFirstObjectByType<PopulationCounter>();
 
+        if (virusStatsDisplay == null)
+            virusStatsDisplay = FindFirstObjectByType<VirusStatsDisplay>();
+
+        if (outbreakStatusTracker == null)
+            outbreakStatusTracker = FindFirstObjectByType<OutbreakStatusTracker>();
+
         if (populationController == null)
             populationController = FindFirstObjectByType<NPCPopulationController>();
 
@@ -89,6 +97,8 @@ public class UIResetManager : MonoBehaviour
             if (peakInfectionTracker != null) foundComponents++;
             if (infectionRateTracker != null) foundComponents++;
             if (populationCounter != null) foundComponents++;
+            if (virusStatsDisplay != null) foundComponents++;
+            if (outbreakStatusTracker != null) foundComponents++;
             if (populationController != null) foundComponents++;
 
             Debug.Log($"Auto-found {foundComponents} UI components");
@@ -291,6 +301,22 @@ public class UIResetManager : MonoBehaviour
             if (debugMode)
                 Debug.Log("Population counter refreshed");
         }
+
+        // Force update virus stats display
+        if (virusStatsDisplay != null)
+        {
+            virusStatsDisplay.ForceUpdate();
+            if (debugMode)
+                Debug.Log("Virus stats display refreshed");
+        }
+
+        // Force update outbreak status tracker
+        if (outbreakStatusTracker != null)
+        {
+            outbreakStatusTracker.ForceUpdate();
+            if (debugMode)
+                Debug.Log("Outbreak status tracker refreshed");
+        }
     }
 
     /// <summary>
@@ -375,6 +401,8 @@ public class UIResetManager : MonoBehaviour
                peakInfectionTracker != null &&
                infectionRateTracker != null &&
                populationCounter != null &&
+               virusStatsDisplay != null &&
+               outbreakStatusTracker != null &&
                populationController != null;
     }
 
