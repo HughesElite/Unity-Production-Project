@@ -18,7 +18,7 @@ public class SettingsOverlay : MonoBehaviour
     public TextMeshProUGUI pauseButtonText;       // Pause button text
 
     [Header("Weather Settings (if using ExclusiveButtonGroup)")]
-    public ExclusiveButtonGroup weatherButtonGroup; // Weather controls
+    public WeatherButtonGroup weatherButtonGroup; // Weather controls
 
     private bool isSettingsOpen = false;
 

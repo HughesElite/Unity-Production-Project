@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ExclusiveButtonGroup : MonoBehaviour
+public class WeatherButtonGroup : MonoBehaviour
 {
     [Header("Button References")]
     public Button hotButton;

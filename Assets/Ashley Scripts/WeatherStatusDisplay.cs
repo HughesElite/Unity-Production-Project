@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ButtonMessageDisplay : MonoBehaviour
+public class WeatherStatusDisplay : MonoBehaviour
 {
     [Header("Button References")]
     public Button hotButton;
@@ -44,7 +44,7 @@ public class ButtonMessageDisplay : MonoBehaviour
 
         if (messageText == null)
         {
-            Debug.LogError("ButtonMessageDisplay: No TextMeshPro component found! Please assign one or attach this script to a TextMeshPro object.");
+            Debug.LogError("WeatherStatusDisplay: No TextMeshPro component found! Please assign one or attach this script to a TextMeshPro object.");
             enabled = false;
             return;
         }

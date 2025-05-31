@@ -21,6 +21,10 @@ public class NPCPopulationController : MonoBehaviour
     public int maxPopulation = 50;
     public int defaultPopulation = 10;
 
+    [Header("Reset Integration")]
+    public NPCResetManager resetManager; // Drag your reset manager here
+    public bool autoResetOnPopulationChange = true; // Auto-reset when population changes
+
     private GameObject[] allNPCs;
     private int currentPopulation;
 
@@ -35,6 +39,12 @@ public class NPCPopulationController : MonoBehaviour
         else
         {
             allNPCs = npcObjects;
+        }
+
+        // Auto-find reset manager if not assigned
+        if (resetManager == null)
+        {
+            resetManager = FindFirstObjectByType<NPCResetManager>();
         }
 
         // Validate we have enough NPCs
@@ -80,6 +90,13 @@ public class NPCPopulationController : MonoBehaviour
             }
 
             SetPopulation(clampedPopulation);
+
+            // Auto-reset if enabled
+            if (autoResetOnPopulationChange && resetManager != null)
+            {
+                resetManager.ResetAllNPCs();
+                Debug.Log($"Auto-reset triggered for population of {clampedPopulation}");
+            }
         }
         else
         {
@@ -146,6 +163,8 @@ public class NPCPopulationController : MonoBehaviour
     {
         UpdateInputFieldText(minPopulation.ToString());
         SetPopulation(minPopulation);
+        if (autoResetOnPopulationChange && resetManager != null)
+            resetManager.ResetAllNPCs();
     }
 
     public void SetPopulationToMax()
@@ -153,12 +172,16 @@ public class NPCPopulationController : MonoBehaviour
         int maxPossible = Mathf.Min(maxPopulation, allNPCs.Length);
         UpdateInputFieldText(maxPossible.ToString());
         SetPopulation(maxPossible);
+        if (autoResetOnPopulationChange && resetManager != null)
+            resetManager.ResetAllNPCs();
     }
 
     public void ResetToDefault()
     {
         UpdateInputFieldText(defaultPopulation.ToString());
         SetPopulation(defaultPopulation);
+        if (autoResetOnPopulationChange && resetManager != null)
+            resetManager.ResetAllNPCs();
     }
 
     // Getter for current population
