@@ -64,20 +64,20 @@ public class NPCPopulationController : MonoBehaviour
         }
 
         // Setup input field - prefer TextMeshPro
-        InputField activeInputField = null;
+       // InputField activeInputField = null;
         if (populationInputField != null)
         {
             populationInputField.text = ""; // Empty field to show placeholder
             populationInputField.onEndEdit.AddListener(OnPopulationInputChanged);
             populationInputField.contentType = TMP_InputField.ContentType.IntegerNumber;
-            activeInputField = null; // TMP doesn't inherit from InputField
+            //activeInputField = null; // TMP doesn't inherit from InputField
         }
         else if (legacyInputField != null)
         {
             legacyInputField.text = defaultPopulation.ToString();
             legacyInputField.onEndEdit.AddListener(OnPopulationInputChanged);
             legacyInputField.contentType = InputField.ContentType.IntegerNumber;
-            activeInputField = legacyInputField;
+           // activeInputField = legacyInputField;
         }
 
         // Set initial population
