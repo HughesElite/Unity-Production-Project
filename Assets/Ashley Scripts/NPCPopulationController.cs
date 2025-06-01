@@ -241,6 +241,9 @@ public class NPCPopulationController : MonoBehaviour
             }
         }
 
+        // Keep track of which NPCs get infected for reinitialization
+        List<GameObject> infectedNPCs = new List<GameObject>();
+
         // Infect the specified number of NPCs
         if (targetInfected > 0 && activeNPCs.Count > 0)
         {
@@ -263,6 +266,7 @@ public class NPCPopulationController : MonoBehaviour
                     if (virusScript != null)
                     {
                         virusScript.ForceInfection();
+                        infectedNPCs.Add(shuffledNPCs[i]);
                     }
                 }
             }
@@ -275,9 +279,17 @@ public class NPCPopulationController : MonoBehaviour
                     if (virusScript != null)
                     {
                         virusScript.ForceInfection();
+                        infectedNPCs.Add(activeNPCs[i]);
                     }
                 }
             }
+        }
+
+        // Reinitialize all NPCs that had their state changed
+        // This prevents them from getting stuck after infection state changes
+        foreach (GameObject npc in activeNPCs)
+        {
+            StartCoroutine(ReinitializeNPC(npc));
         }
 
         // Update infection feedback
