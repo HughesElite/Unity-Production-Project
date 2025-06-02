@@ -41,10 +41,11 @@ public class OutbreakStatusTracker : MonoBehaviour
 
     void Start()
     {
-        // Get TextMeshPro component if not assigned
+        // Auto-detect TextMeshPro component if not manually assigned
         if (statusText == null)
             statusText = GetComponent<TextMeshProUGUI>();
 
+        // Ensure we have a valid text component before proceeding
         if (statusText == null)
         {
             Debug.LogError("OutbreakStatusTracker: No TextMeshPro component found! Please assign one or attach this script to a TextMeshPro object.");
@@ -52,13 +53,13 @@ public class OutbreakStatusTracker : MonoBehaviour
             return;
         }
 
-        // Initial update
+        // Display initial status immediately on startup
         UpdateStatusDisplay();
     }
 
     void Update()
     {
-        // Update at specified intervals
+        // Throttle updates to improve performance (no need to update every frame)
         if (Time.time >= nextUpdateTime)
         {
             nextUpdateTime = Time.time + updateInterval;
@@ -68,32 +69,34 @@ public class OutbreakStatusTracker : MonoBehaviour
 
     void UpdateStatusDisplay()
     {
-        // Get current statistics
+        // Get current infection data from the virus simulation
         int infected = VirusSimulation.GetInfectedCount();
         int total = VirusSimulation.GetTotalNPCCount();
 
+        // Handle edge case where no NPCs exist in simulation
         if (total == 0)
         {
             DisplayStatus("NO DATA", Color.gray);
             return;
         }
 
-        // Calculate infection percentage
+        // Calculate what percentage of population is currently infected
         float infectionRate = (float)infected / total;
 
-        // Determine status level
+        // Classify outbreak severity based on infection percentage
         OutbreakLevel level = GetOutbreakLevel(infectionRate);
 
-        // Get status info
+        // Get display text and color for this severity level
         string statusName = GetStatusName(level);
         Color statusColor = GetStatusColor(level);
 
-        // Display the status
+        // Update the UI display with new status
         DisplayStatus(statusName, statusColor);
     }
 
     OutbreakLevel GetOutbreakLevel(float infectionRate)
     {
+        // Determine outbreak severity using threshold-based classification
         if (infectionRate >= criticalThreshold)
             return OutbreakLevel.Critical;
         else if (infectionRate >= spreadingThreshold)
@@ -106,6 +109,7 @@ public class OutbreakStatusTracker : MonoBehaviour
 
     string GetStatusName(OutbreakLevel level)
     {
+        // Convert outbreak level enum to user-friendly display text
         switch (level)
         {
             case OutbreakLevel.Critical: return "Critical";
@@ -118,6 +122,7 @@ public class OutbreakStatusTracker : MonoBehaviour
 
     Color GetStatusColor(OutbreakLevel level)
     {
+        // Assign color coding for visual severity indication
         switch (level)
         {
             case OutbreakLevel.Critical: return criticalColor;
@@ -132,21 +137,23 @@ public class OutbreakStatusTracker : MonoBehaviour
     {
         if (statusText == null) return;
 
-        // Build display text with white label and colored status
+        // Format text with optional label (label stays white, status gets colored)
         string displayText = showLabel ? $"<color=white>{customLabel}:</color> {status}" : status;
 
-        // Set text and color
+        // Apply formatted text to UI component
         statusText.text = displayText;
 
+        // Apply color coding if enabled
         if (useColors)
         {
             statusText.color = color;
         }
     }
 
-    // Public methods for external control
+    // External access methods for other scripts to query outbreak status
     public OutbreakLevel GetCurrentLevel()
     {
+        // Calculate current outbreak level without updating display
         int infected = VirusSimulation.GetInfectedCount();
         int total = VirusSimulation.GetTotalNPCCount();
 
@@ -158,11 +165,13 @@ public class OutbreakStatusTracker : MonoBehaviour
 
     public string GetCurrentStatus()
     {
+        // Get human-readable status string for current conditions
         return GetStatusName(GetCurrentLevel());
     }
 
     public float GetInfectionRate()
     {
+        // Get current infection rate as percentage (0.0 to 1.0)
         int infected = VirusSimulation.GetInfectedCount();
         int total = VirusSimulation.GetTotalNPCCount();
 
@@ -172,18 +181,21 @@ public class OutbreakStatusTracker : MonoBehaviour
 
     public void SetLabel(string newLabel)
     {
+        // Change the display label and refresh the UI
         customLabel = newLabel;
         UpdateStatusDisplay();
     }
 
     public void ForceUpdate()
     {
+        // Manually trigger status update outside normal interval
         UpdateStatusDisplay();
     }
 
-    // Update thresholds at runtime
+    // Runtime configuration method for dynamic threshold adjustment
     public void SetThresholds(float safe, float contained, float spreading, float critical)
     {
+        // Update severity thresholds and refresh display immediately
         containedThreshold = safe;
         spreadingThreshold = contained;
         criticalThreshold = spreading;

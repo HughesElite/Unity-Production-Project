@@ -14,14 +14,15 @@ public class PeakInfectionTracker : MonoBehaviour
     public string customLabel = "Peak";
 
     private float nextUpdateTime;
-    private int peakInfections = 0;
+    private int peakInfections = 0; // Highest simultaneous infection count recorded
 
     void Start()
     {
-        // Get TextMeshPro component if not assigned
+        // Auto-detect TextMeshPro component if not manually assigned
         if (peakText == null)
             peakText = GetComponent<TextMeshProUGUI>();
 
+        // Ensure we have a valid text component before starting tracking
         if (peakText == null)
         {
             Debug.LogError("PeakInfectionTracker: No TextMeshPro component found! Please assign one or attach this script to a TextMeshPro object.");
@@ -29,13 +30,13 @@ public class PeakInfectionTracker : MonoBehaviour
             return;
         }
 
-        // Initial update
+        // Display initial peak value (starts at 0)
         UpdatePeakDisplay();
     }
 
     void Update()
     {
-        // Update at specified intervals
+        // Throttle updates for performance (peak tracking doesn't need every frame)
         if (Time.time >= nextUpdateTime)
         {
             nextUpdateTime = Time.time + updateInterval;
@@ -45,18 +46,20 @@ public class PeakInfectionTracker : MonoBehaviour
 
     void UpdatePeakDisplay()
     {
-        // Get current infected count
+        // Get current number of simultaneously infected NPCs
         int currentInfected = VirusSimulation.GetInfectedCount();
 
-        // Update peak if current is higher
+        // Track the highest infection count reached during this simulation
+        // Peak only increases, never decreases (historical maximum)
         if (currentInfected > peakInfections)
         {
             peakInfections = currentInfected;
         }
 
-        // Update display
+        // Update UI display with current peak value
         if (peakText != null)
         {
+            // Format display with optional label
             if (showLabel)
             {
                 peakText.text = $"{customLabel}: {peakInfections}";
@@ -68,26 +71,30 @@ public class PeakInfectionTracker : MonoBehaviour
         }
     }
 
-    // Public methods for external control
+    // External access methods for other scripts to query peak data
     public int GetPeakInfections()
     {
+        // Return the highest infection count recorded so far
         return peakInfections;
     }
 
     public void ResetPeak()
     {
+        // Clear peak history and start tracking fresh (useful for simulation resets)
         peakInfections = 0;
         UpdatePeakDisplay();
     }
 
     public void SetLabel(string newLabel)
     {
+        // Change display label and refresh UI immediately
         customLabel = newLabel;
         UpdatePeakDisplay();
     }
 
     public void ForceUpdate()
     {
+        // Manually trigger peak check and display update outside normal interval
         UpdatePeakDisplay();
     }
 }

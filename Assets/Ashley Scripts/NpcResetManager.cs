@@ -21,22 +21,22 @@ public class NPCResetManager : MonoBehaviour
     [Header("Debug")]
     public bool debugMode = false;
 
-    // Dictionary to store original positions of NPCs
+    // Store initial positions and rotations for restoration
     private Dictionary<GameObject, Vector3> originalPositions = new Dictionary<GameObject, Vector3>();
     private Dictionary<GameObject, Quaternion> originalRotations = new Dictionary<GameObject, Quaternion>();
 
     void Start()
     {
-        // Store original positions of all NPCs
+        // Capture the starting positions of all NPCs for later restoration
         StoreOriginalPositions();
 
-        // Auto-assign button if not set and this script is on a button
+        // Set up reset button functionality (auto-detect if not manually assigned)
         if (resetButton == null)
         {
             resetButton = GetComponent<Button>();
         }
 
-        // Subscribe to button click event
+        // Connect button click to reset functionality
         if (resetButton != null)
         {
             resetButton.onClick.AddListener(ResetAllNPCs);
@@ -51,6 +51,7 @@ public class NPCResetManager : MonoBehaviour
 
     void StoreOriginalPositions()
     {
+        // Record the initial placement of all NPCs in the scene
         GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
 
         foreach (GameObject npc in npcs)
@@ -64,7 +65,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets all NPCs to their original positions and healthy virus state
+    /// Complete reset - positions and virus states back to initial conditions
     /// </summary>
     public void ResetAllNPCs()
     {
@@ -76,7 +77,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets only the positions of all NPCs
+    /// Move all NPCs back to their starting positions (or spawn points)
     /// </summary>
     public void ResetNPCPositions()
     {
@@ -84,7 +85,7 @@ public class NPCResetManager : MonoBehaviour
 
         if (useOriginalPositions)
         {
-            // Reset to original positions
+            // Restore NPCs to their exact starting locations
             foreach (GameObject npc in npcs)
             {
                 if (originalPositions.ContainsKey(npc))
@@ -94,7 +95,7 @@ public class NPCResetManager : MonoBehaviour
                 }
                 else
                 {
-                    // If original position not stored, store current as original
+                    // Handle NPCs spawned after initialization
                     originalPositions[npc] = npc.transform.position;
                     originalRotations[npc] = npc.transform.rotation;
                 }
@@ -102,12 +103,12 @@ public class NPCResetManager : MonoBehaviour
         }
         else
         {
-            // Use spawn points
+            // Distribute NPCs among predefined spawn points
             if (spawnPoints != null && spawnPoints.Length > 0)
             {
                 if (randomizeSpawnPoints)
                 {
-                    // Randomly distribute NPCs among spawn points
+                    // Random assignment for varied simulation starts
                     for (int i = 0; i < npcs.Length; i++)
                     {
                         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
@@ -117,7 +118,7 @@ public class NPCResetManager : MonoBehaviour
                 }
                 else
                 {
-                    // Distribute NPCs evenly among spawn points
+                    // Even distribution across all spawn points
                     for (int i = 0; i < npcs.Length; i++)
                     {
                         Transform spawnPoint = spawnPoints[i % spawnPoints.Length];
@@ -137,14 +138,14 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets only the virus states of all NPCs, preserving patient zero settings
+    /// Reset infection states while preserving patient zero configuration
     /// </summary>
     public void ResetVirusStates()
     {
-        // First, reset all NPCs to healthy
+        // Clear all current infections and immunity
         VirusSimulation.ResetAllNPCs();
 
-        // Then re-infect NPCs that are marked as patient zero
+        // Restore initial infected NPCs (patient zeros) as configured
         RestorePatientZeros();
 
         if (debugMode)
@@ -152,13 +153,14 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Re-infects NPCs that have startInfected = true (patient zeros)
+    /// Re-infect NPCs that are configured as initial carriers (patient zeros)
     /// </summary>
     private void RestorePatientZeros()
     {
         GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
         int patientZeroCount = 0;
 
+        // Find and re-infect NPCs marked as starting infected
         foreach (GameObject npc in npcs)
         {
             VirusSimulation virusScript = npc.GetComponent<VirusSimulation>();
@@ -177,7 +179,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Manually infects a random NPC (useful for testing)
+    /// Testing utility - infect a random NPC for quick simulation starts
     /// </summary>
     [ContextMenu("Infect Random NPC")]
     public void InfectRandomNPC()
@@ -199,7 +201,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Update original positions if NPCs have been moved manually
+    /// Update stored positions if NPCs have been manually repositioned in editor
     /// </summary>
     [ContextMenu("Update Original Positions")]
     public void UpdateOriginalPositions()
@@ -210,7 +212,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Get statistics about current NPC states
+    /// Debug output of current simulation state
     /// </summary>
     public void LogNPCStatistics()
     {
@@ -227,7 +229,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Get count of NPCs marked as patient zero
+    /// Count NPCs configured as initial infection sources
     /// </summary>
     public int GetPatientZeroCount()
     {
@@ -247,7 +249,7 @@ public class NPCResetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Manually set/unset an NPC as patient zero
+    /// Configure an NPC as initial infection source for simulation starts
     /// </summary>
     public void SetPatientZero(GameObject npc, bool isPatientZero)
     {
@@ -263,14 +265,14 @@ public class NPCResetManager : MonoBehaviour
 
     void OnDestroy()
     {
-        // Clean up button listener
+        // Clean up event listeners to prevent memory leaks
         if (resetButton != null)
         {
             resetButton.onClick.RemoveListener(ResetAllNPCs);
         }
     }
 
-    // Public methods that can be called from other scripts or UI events
+    // Utility methods for external scripts to query NPC state
     public int GetNPCCount()
     {
         return GameObject.FindGameObjectsWithTag("NPC").Length;

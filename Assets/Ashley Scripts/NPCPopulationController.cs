@@ -7,18 +7,18 @@ using System.Collections.Generic;
 public class NPCPopulationController : MonoBehaviour
 {
     [Header("UI References")]
-    public TMP_InputField populationInputField; // TextMeshPro InputField
-    public InputField legacyInputField;         // Legacy InputField (as backup)
-    public Text feedbackText;                   // Shows current population status
+    public TMP_InputField populationInputField; 
+    public InputField legacyInputField;         
+    public Text feedbackText;                   
 
     [Header("Infection Control UI")]
-    public TMP_InputField infectedCountInputField; // Input for number of infected NPCs
-    public Text infectionFeedbackText;              // Shows infection status
+    public TMP_InputField infectedCountInputField; 
+    public Text infectionFeedbackText;             
 
     [Header("NPC Control")]
-    public GameObject[] npcObjects; // Drag your NPCs here
-    public string npcTag = "NPC"; // Or find NPCs by tag
-    public bool findNPCsByTag = true; // Auto-find NPCs vs manual assignment
+    public GameObject[] npcObjects; 
+    public string npcTag = "NPC"; 
+    public bool findNPCsByTag = true; 
 
     [Header("Population Settings")]
     [Range(2, 50)]
@@ -33,8 +33,8 @@ public class NPCPopulationController : MonoBehaviour
     public bool randomizeInfectedSelection = true; // Randomly select which NPCs to infect
 
     [Header("Reset Integration")]
-    public NPCResetManager resetManager; // Drag your reset manager here
-    public UIResetManager uiResetManager; // Drag your UI reset manager here
+    public NPCResetManager resetManager; // place our reset manager here
+    public UIResetManager uiResetManager; // place our UI reset manager here
 
     private GameObject[] allNPCs;
     private int currentPopulation;
@@ -42,7 +42,7 @@ public class NPCPopulationController : MonoBehaviour
 
     void Start()
     {
-        // Find NPCs in scene
+        // Locate NPCs in the scene using tag or manual array
         if (findNPCsByTag)
         {
             allNPCs = GameObject.FindGameObjectsWithTag(npcTag);
@@ -53,7 +53,7 @@ public class NPCPopulationController : MonoBehaviour
             allNPCs = npcObjects;
         }
 
-        // Auto-find reset managers if not assigned
+        // Auto-locate reset managers if not manually assigned
         if (resetManager == null)
         {
             resetManager = FindFirstObjectByType<NPCResetManager>();
@@ -64,13 +64,13 @@ public class NPCPopulationController : MonoBehaviour
             uiResetManager = FindFirstObjectByType<UIResetManager>();
         }
 
-        // Validate we have enough NPCs
+        // Validate we have enough NPCs for the maximum population setting
         if (allNPCs.Length < maxPopulation)
         {
             Debug.LogWarning($"Only {allNPCs.Length} NPCs found, but max population is {maxPopulation}. Consider adding more NPCs or lowering max population.");
         }
 
-        // Setup population input field
+        // Configure population input field with validation and default value
         if (populationInputField != null)
         {
             populationInputField.text = defaultPopulation.ToString();
@@ -84,7 +84,7 @@ public class NPCPopulationController : MonoBehaviour
             legacyInputField.contentType = InputField.ContentType.IntegerNumber;
         }
 
-        // Setup infected count input field
+        // Configure infected count input field with validation
         if (infectedCountInputField != null)
         {
             infectedCountInputField.text = defaultInfectedCount.ToString();
@@ -92,32 +92,32 @@ public class NPCPopulationController : MonoBehaviour
             infectedCountInputField.contentType = TMP_InputField.ContentType.IntegerNumber;
         }
 
-        // Set initial population and infected count
+        // Apply initial settings to start the simulation
         SetPopulation(defaultPopulation);
         SetInfectedCount(defaultInfectedCount);
     }
 
     public void OnPopulationInputChanged(string inputValue)
     {
-        // Try to parse the input
+        // Parse and validate user input for population size
         if (int.TryParse(inputValue, out int requestedPopulation))
         {
-            // Clamp to valid range
+            // Enforce population limits to prevent simulation issues
             int clampedPopulation = Mathf.Clamp(requestedPopulation, minPopulation, maxPopulation);
 
-            // Update input field if it was clamped
+            // Update UI if value was adjusted to fit within limits
             if (clampedPopulation != requestedPopulation)
             {
                 UpdatePopulationInputFieldText(clampedPopulation.ToString());
                 Debug.Log($"Population clamped from {requestedPopulation} to {clampedPopulation}");
             }
 
-            // RESET THE ENTIRE SIMULATION WITH NEW VALUES
+            // Reset entire simulation with new population to ensure clean state
             ResetSimulationWithNewValues(clampedPopulation, Mathf.Min(currentInfectedCount, clampedPopulation));
         }
         else
         {
-            // Invalid input - reset to current population
+            // Handle invalid input by reverting to current valid value
             Debug.LogWarning($"Invalid input: '{inputValue}'. Resetting to {currentPopulation}");
             UpdatePopulationInputFieldText(currentPopulation.ToString());
             UpdateFeedbackText($"Invalid input! Enter a number between {minPopulation} and {maxPopulation}", Color.red);
@@ -128,22 +128,22 @@ public class NPCPopulationController : MonoBehaviour
     {
         if (int.TryParse(inputValue, out int requestedInfected))
         {
-            // Clamp to valid range (0 to current population)
+            // Infected count cannot exceed current population
             int clampedInfected = Mathf.Clamp(requestedInfected, 0, currentPopulation);
 
-            // Update input field if it was clamped
+            // Update UI if value was adjusted to fit within limits
             if (clampedInfected != requestedInfected)
             {
                 UpdateInfectedInputFieldText(clampedInfected.ToString());
                 Debug.Log($"Infected count clamped from {requestedInfected} to {clampedInfected}");
             }
 
-            // RESET THE ENTIRE SIMULATION WITH NEW VALUES
+            // Reset simulation to apply new infection distribution
             ResetSimulationWithNewValues(currentPopulation, clampedInfected);
         }
         else
         {
-            // Invalid input - reset to current infected count
+            // Handle invalid input by reverting to current valid value
             Debug.LogWarning($"Invalid infected count input: '{inputValue}'. Resetting to {currentInfectedCount}");
             UpdateInfectedInputFieldText(currentInfectedCount.ToString());
             UpdateInfectionFeedbackText($"Invalid input! Enter a number between 0 and {currentPopulation}", Color.red);
@@ -154,11 +154,11 @@ public class NPCPopulationController : MonoBehaviour
     {
         Debug.Log($"Resetting simulation with Population: {newPopulation}, Infected: {newInfectedCount}");
 
-        // IMPORTANT: Update the defaults BEFORE resetting
+        // Update defaults before reset to preserve user's settings
         defaultPopulation = newPopulation;
         defaultInfectedCount = newInfectedCount;
 
-        // Temporarily disable auto-reset to default population
+        // Temporarily prevent UI reset manager from overriding our new population
         bool originalResetSetting = false;
         if (uiResetManager != null)
         {
@@ -166,32 +166,32 @@ public class NPCPopulationController : MonoBehaviour
             uiResetManager.resetToDefaultPopulation = false;
         }
 
-        // Reset all UI elements (clock, statistics, etc.)
+        // Reset all UI elements (clock, statistics, graphs, etc.)
         if (uiResetManager != null)
         {
             uiResetManager.ResetAllUI();
         }
 
-        // Re-enable the setting
+        // Restore original reset setting for future use
         if (uiResetManager != null)
         {
             uiResetManager.resetToDefaultPopulation = originalResetSetting;
         }
 
-        // Reset all NPCs to their original positions
+        // Reset all NPCs to their starting positions and movement states
         if (resetManager != null)
         {
             resetManager.ResetNPCPositions();
         }
 
-        // Reset virus states (all healthy)
+        // Clear all virus states (set everyone to healthy)
         VirusSimulation.ResetAllNPCs();
 
-        // NOW set the new population and infected count
+        // Apply the new population and infection settings
         SetPopulation(newPopulation);
         SetInfectedCount(newInfectedCount);
 
-        // Update the UI to show the new values
+        // Update UI displays to reflect the new values
         UpdatePopulationInputFieldText(newPopulation.ToString());
         UpdateInfectedInputFieldText(newInfectedCount.ToString());
     }
@@ -204,19 +204,19 @@ public class NPCPopulationController : MonoBehaviour
             return;
         }
 
-        // Ensure we don't exceed available NPCs
+        // Limit population to available NPCs in the scene
         int actualPopulation = Mathf.Min(targetPopulation, allNPCs.Length);
 
-        // Enable/disable NPCs based on population
+        // Activate/deactivate NPCs to match desired population size
         for (int i = 0; i < allNPCs.Length; i++)
         {
             if (allNPCs[i] != null)
             {
                 bool shouldBeActive = i < actualPopulation;
 
+                // Properly stop NavMeshAgent before deactivating to prevent errors
                 if (!shouldBeActive && allNPCs[i].activeInHierarchy)
                 {
-                    // Properly stop NavMeshAgent before deactivation
                     UnityEngine.AI.NavMeshAgent agent = allNPCs[i].GetComponent<UnityEngine.AI.NavMeshAgent>();
                     if (agent != null && agent.enabled && agent.isOnNavMesh)
                     {
@@ -228,7 +228,7 @@ public class NPCPopulationController : MonoBehaviour
                 bool wasActive = allNPCs[i].activeInHierarchy;
                 allNPCs[i].SetActive(shouldBeActive);
 
-                // Reinitialize newly activated NPCs
+                // Reinitialize newly activated NPCs to prevent movement issues
                 if (shouldBeActive && !wasActive)
                 {
                     StartCoroutine(ReinitializeNPC(allNPCs[i]));
@@ -238,7 +238,7 @@ public class NPCPopulationController : MonoBehaviour
 
         currentPopulation = actualPopulation;
 
-        // Update feedback
+        // Provide feedback about the population change
         string message = $"Population: {actualPopulation} NPCs active";
         if (actualPopulation != targetPopulation)
         {
@@ -253,7 +253,7 @@ public class NPCPopulationController : MonoBehaviour
     {
         currentInfectedCount = targetInfected;
 
-        // Get list of active NPCs
+        // Build list of currently active NPCs for infection assignment
         List<GameObject> activeNPCs = new List<GameObject>();
         foreach (GameObject npc in allNPCs)
         {
@@ -263,7 +263,7 @@ public class NPCPopulationController : MonoBehaviour
             }
         }
 
-        // Reset all active NPCs to healthy first
+        // Start with a clean slate - reset all active NPCs to healthy
         foreach (GameObject npc in activeNPCs)
         {
             VirusSimulation virusScript = npc.GetComponent<VirusSimulation>();
@@ -273,15 +273,15 @@ public class NPCPopulationController : MonoBehaviour
             }
         }
 
-        // Keep track of which NPCs get infected for reinitialization
+        // Track infected NPCs for reinitialisation
         List<GameObject> infectedNPCs = new List<GameObject>();
 
-        // Infect the specified number of NPCs
+        // Apply infections to the specified number of NPCs
         if (targetInfected > 0 && activeNPCs.Count > 0)
         {
             if (randomizeInfectedSelection)
             {
-                // Randomly select NPCs to infect
+                // Shuffle the NPC list to randomize infection distribution
                 List<GameObject> shuffledNPCs = new List<GameObject>(activeNPCs);
                 for (int i = 0; i < shuffledNPCs.Count; i++)
                 {
@@ -291,7 +291,7 @@ public class NPCPopulationController : MonoBehaviour
                     shuffledNPCs[randomIndex] = temp;
                 }
 
-                // Infect the first N NPCs from shuffled list
+                // Infect the first N NPCs from the shuffled list
                 for (int i = 0; i < Mathf.Min(targetInfected, shuffledNPCs.Count); i++)
                 {
                     VirusSimulation virusScript = shuffledNPCs[i].GetComponent<VirusSimulation>();
@@ -304,7 +304,7 @@ public class NPCPopulationController : MonoBehaviour
             }
             else
             {
-                // Infect the first N active NPCs
+                // Infect NPCs in order (first N active NPCs)
                 for (int i = 0; i < Mathf.Min(targetInfected, activeNPCs.Count); i++)
                 {
                     VirusSimulation virusScript = activeNPCs[i].GetComponent<VirusSimulation>();
@@ -317,18 +317,17 @@ public class NPCPopulationController : MonoBehaviour
             }
         }
 
-        // Reinitialize all NPCs that had their state changed
-        // This prevents them from getting stuck after infection state changes
+        // Reinitialise all NPCs to prevent movement issues after state changes
         foreach (GameObject npc in activeNPCs)
         {
             StartCoroutine(ReinitializeNPC(npc));
         }
 
-        // Update infection feedback
+        // Update UI feedback to show infection distribution
         UpdateInfectionFeedbackText($"Infected NPCs: {targetInfected}/{currentPopulation}", Color.green);
         Debug.Log($"Set {targetInfected} NPCs as infected");
 
-        // Update UI displays
+        // Refresh UI statistics after a frame delay
         if (uiResetManager != null)
         {
             StartCoroutine(DelayedUIUpdate());
@@ -337,7 +336,8 @@ public class NPCPopulationController : MonoBehaviour
 
     private IEnumerator DelayedUIUpdate()
     {
-        yield return null; // Wait a frame for virus states to update
+        // Wait for virus states to update before refreshing UI statistics
+        yield return null;
         if (uiResetManager != null)
         {
             uiResetManager.ResetStatistics();
@@ -346,6 +346,7 @@ public class NPCPopulationController : MonoBehaviour
 
     private void ResetAllNPCsToHealthy()
     {
+        // Clear all virus states across active NPCs
         foreach (GameObject npc in allNPCs)
         {
             if (npc != null && npc.activeInHierarchy)
@@ -361,25 +362,25 @@ public class NPCPopulationController : MonoBehaviour
 
     private IEnumerator ReinitializeNPC(GameObject npc)
     {
-        // Wait for the GameObject to fully activate
+        // Wait for GameObject activation to complete
         yield return null;
 
-        // Store the desired Y position (ground level)
-        float groundY = -2.7f; // Your ground level
+        // Force NPCs to stay at ground level to prevent floating
+        float groundY = -2.7f;
 
-        // Reinitialize NavMeshAgent
+        // Reset NavMeshAgent to prevent pathfinding issues
         UnityEngine.AI.NavMeshAgent agent = npc.GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent != null && agent.enabled)
         {
-            // Get current position but force Y to ground level
+            // Ensure NPC position is at ground level
             Vector3 desiredPos = npc.transform.position;
             desiredPos.y = groundY;
 
-            // Ensure NPC is on NavMesh
+            // Find valid NavMesh position near desired location
             UnityEngine.AI.NavMeshHit hit;
             if (UnityEngine.AI.NavMesh.SamplePosition(desiredPos, out hit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
             {
-                // Force the Y position to stay at ground level
+                // Force Y position to ground level and teleport NPC
                 Vector3 finalPos = hit.position;
                 finalPos.y = groundY;
 
@@ -392,12 +393,13 @@ public class NPCPopulationController : MonoBehaviour
             }
         }
 
-        // Reinitialize movement scripts
+        // Restart movement scripts to clear any stuck states
         var moveToObjects = npc.GetComponent<PlayerMoveToObjects>();
         var moveRandomly = npc.GetComponent<PlayerMoveRandomly>();
 
         if (moveToObjects != null && moveToObjects.enabled)
         {
+            // Stop all movement coroutines and restart the component
             moveToObjects.StopAllCoroutines();
             moveToObjects.enabled = false;
             yield return null;
@@ -406,6 +408,7 @@ public class NPCPopulationController : MonoBehaviour
 
         if (moveRandomly != null && moveRandomly.enabled)
         {
+            // Stop all movement coroutines and restart the component
             moveRandomly.StopAllCoroutines();
             moveRandomly.enabled = false;
             yield return null;
@@ -413,6 +416,7 @@ public class NPCPopulationController : MonoBehaviour
         }
     }
 
+    // Helper methods to update UI input fields safely
     private void UpdatePopulationInputFieldText(string text)
     {
         if (populationInputField != null)
@@ -445,7 +449,7 @@ public class NPCPopulationController : MonoBehaviour
         }
     }
 
-    // Public methods for other scripts to call
+    // Public methods for quick population adjustments
     public void SetPopulationToMin()
     {
         UpdatePopulationInputFieldText(minPopulation.ToString());
@@ -461,13 +465,14 @@ public class NPCPopulationController : MonoBehaviour
 
     public void ResetToDefault()
     {
+        // Restore simulation to initial default settings
         UpdatePopulationInputFieldText(defaultPopulation.ToString());
         SetPopulation(defaultPopulation);
         ResetAllNPCsToHealthy();
         SetInfectedCount(defaultInfectedCount);
     }
 
-    // Getter methods
+    // Getter methods for external scripts
     public int GetCurrentPopulation()
     {
         return currentPopulation;
@@ -478,7 +483,7 @@ public class NPCPopulationController : MonoBehaviour
         return currentInfectedCount;
     }
 
-    // Quick infection presets
+    // Quick infection preset buttons
     public void SetAllHealthy()
     {
         UpdateInfectedInputFieldText("0");
@@ -498,10 +503,11 @@ public class NPCPopulationController : MonoBehaviour
         ResetSimulationWithNewValues(currentPopulation, currentPopulation);
     }
 
-    // Debug methods
+    // Debug and maintenance methods
     [ContextMenu("Log NPC Distribution")]
     public void LogNPCDistribution()
     {
+        // Analyze current NPC states for debugging
         if (allNPCs == null) return;
 
         int activeCount = 0, infectedCount = 0, recoveredCount = 0, healthyCount = 0;
@@ -531,6 +537,7 @@ public class NPCPopulationController : MonoBehaviour
     [ContextMenu("Fix Stuck NPCs")]
     public void FixStuckNPCs()
     {
+        // Repair NPCs that aren't moving properly
         GameObject[] npcs = GameObject.FindGameObjectsWithTag(npcTag);
         int fixedCount = 0;
 
