@@ -112,23 +112,8 @@ public class NPCPopulationController : MonoBehaviour
                 Debug.Log($"Population clamped from {requestedPopulation} to {clampedPopulation}");
             }
 
-            SetPopulation(clampedPopulation);
-
-            // Reset all NPCs to healthy first
-            ResetAllNPCsToHealthy();
-
-            // Set infected count to 1 (or maintain current if valid)
-            int newInfectedCount = Mathf.Min(currentInfectedCount, clampedPopulation);
-            if (newInfectedCount < 1) newInfectedCount = 1;
-
-            UpdateInfectedInputFieldText(newInfectedCount.ToString());
-            SetInfectedCount(newInfectedCount);
-
-            // Update UI displays
-            if (uiResetManager != null)
-            {
-                uiResetManager.ResetStatistics();
-            }
+            // RESET THE ENTIRE SIMULATION WITH NEW VALUES
+            ResetSimulationWithNewValues(clampedPopulation, Mathf.Min(currentInfectedCount, clampedPopulation));
         }
         else
         {
@@ -153,7 +138,8 @@ public class NPCPopulationController : MonoBehaviour
                 Debug.Log($"Infected count clamped from {requestedInfected} to {clampedInfected}");
             }
 
-            SetInfectedCount(clampedInfected);
+            // RESET THE ENTIRE SIMULATION WITH NEW VALUES
+            ResetSimulationWithNewValues(currentPopulation, clampedInfected);
         }
         else
         {
@@ -162,6 +148,52 @@ public class NPCPopulationController : MonoBehaviour
             UpdateInfectedInputFieldText(currentInfectedCount.ToString());
             UpdateInfectionFeedbackText($"Invalid input! Enter a number between 0 and {currentPopulation}", Color.red);
         }
+    }
+
+    private void ResetSimulationWithNewValues(int newPopulation, int newInfectedCount)
+    {
+        Debug.Log($"Resetting simulation with Population: {newPopulation}, Infected: {newInfectedCount}");
+
+        // IMPORTANT: Update the defaults BEFORE resetting
+        defaultPopulation = newPopulation;
+        defaultInfectedCount = newInfectedCount;
+
+        // Temporarily disable auto-reset to default population
+        bool originalResetSetting = false;
+        if (uiResetManager != null)
+        {
+            originalResetSetting = uiResetManager.resetToDefaultPopulation;
+            uiResetManager.resetToDefaultPopulation = false;
+        }
+
+        // Reset all UI elements (clock, statistics, etc.)
+        if (uiResetManager != null)
+        {
+            uiResetManager.ResetAllUI();
+        }
+
+        // Re-enable the setting
+        if (uiResetManager != null)
+        {
+            uiResetManager.resetToDefaultPopulation = originalResetSetting;
+        }
+
+        // Reset all NPCs to their original positions
+        if (resetManager != null)
+        {
+            resetManager.ResetNPCPositions();
+        }
+
+        // Reset virus states (all healthy)
+        VirusSimulation.ResetAllNPCs();
+
+        // NOW set the new population and infected count
+        SetPopulation(newPopulation);
+        SetInfectedCount(newInfectedCount);
+
+        // Update the UI to show the new values
+        UpdatePopulationInputFieldText(newPopulation.ToString());
+        UpdateInfectedInputFieldText(newInfectedCount.ToString());
     }
 
     private void SetPopulation(int targetPopulation)
@@ -417,18 +449,14 @@ public class NPCPopulationController : MonoBehaviour
     public void SetPopulationToMin()
     {
         UpdatePopulationInputFieldText(minPopulation.ToString());
-        SetPopulation(minPopulation);
-        ResetAllNPCsToHealthy();
-        SetInfectedCount(1);
+        ResetSimulationWithNewValues(minPopulation, 1);
     }
 
     public void SetPopulationToMax()
     {
         int maxPossible = Mathf.Min(maxPopulation, allNPCs.Length);
         UpdatePopulationInputFieldText(maxPossible.ToString());
-        SetPopulation(maxPossible);
-        ResetAllNPCsToHealthy();
-        SetInfectedCount(1);
+        ResetSimulationWithNewValues(maxPossible, 1);
     }
 
     public void ResetToDefault()
@@ -454,20 +482,20 @@ public class NPCPopulationController : MonoBehaviour
     public void SetAllHealthy()
     {
         UpdateInfectedInputFieldText("0");
-        SetInfectedCount(0);
+        ResetSimulationWithNewValues(currentPopulation, 0);
     }
 
     public void SetHalfInfected()
     {
         int halfPop = currentPopulation / 2;
         UpdateInfectedInputFieldText(halfPop.ToString());
-        SetInfectedCount(halfPop);
+        ResetSimulationWithNewValues(currentPopulation, halfPop);
     }
 
     public void SetAllInfected()
     {
         UpdateInfectedInputFieldText(currentPopulation.ToString());
-        SetInfectedCount(currentPopulation);
+        ResetSimulationWithNewValues(currentPopulation, currentPopulation);
     }
 
     // Debug methods

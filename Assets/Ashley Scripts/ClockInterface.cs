@@ -60,13 +60,13 @@ public class SimulationClock : MonoBehaviour
     {
         currentHour++;
 
-        // After 12am (24), go to 1am and advance day
+        // After 12am (24), goes to 1am and advances day
         if (currentHour > 24)
         {
             currentHour = 1;
             currentDayIndex++;
 
-            // Cycle back to Monday after Sunday
+            // Cycles back to Monday after Sunday
             if (currentDayIndex >= dayNames.Length)
             {
                 currentDayIndex = 0;

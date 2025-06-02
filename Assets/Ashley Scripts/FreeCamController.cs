@@ -13,7 +13,7 @@ public class FreeRoamCameraController : MonoBehaviour
 
     void Start()
     {
-        // Ensure free roam camera starts disabled
+        // Makes sure free roam camera starts disabled
         if (freeRoamCamera != null)
         {
             freeRoamCamera.enabled = false;
@@ -40,7 +40,7 @@ public class FreeRoamCameraController : MonoBehaviour
         }
     }
 
-    // Call this from your "Free Cam" button
+    // Call this from our "Free Cam" button
     public void SwitchToFreeRoam()
     {
         if (cameraSwitcher != null && freeRoamCamera != null)
@@ -67,7 +67,7 @@ public class FreeRoamCameraController : MonoBehaviour
     {
         if (cameraSwitcher != null && freeRoamCamera != null)
         {
-            // Disable free roam camera
+            // Disables free roam camera
             freeRoamCamera.enabled = false;
 
             // Go back to the camera that was active before

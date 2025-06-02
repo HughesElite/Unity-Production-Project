@@ -11,7 +11,7 @@ public class CanvasToggle : MonoBehaviour
 
     void Start()
     {
-        // Set initial state
+        // Sets the initial state
         if (targetCanvas != null && startHidden)
         {
             targetCanvas.gameObject.SetActive(false);
@@ -27,7 +27,7 @@ public class CanvasToggle : MonoBehaviour
         }
     }
 
-    // Call this from your button
+    // Call this from our button
     public void ShowCanvas()
     {
         if (targetCanvas != null)

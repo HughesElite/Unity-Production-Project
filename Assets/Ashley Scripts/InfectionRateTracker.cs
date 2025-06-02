@@ -62,7 +62,7 @@ public class InfectionRateTracker : MonoBehaviour
 
     void Start()
     {
-        // Get components
+        // Gets components
         if (rateText == null)
             rateText = GetComponent<TextMeshProUGUI>();
 
@@ -332,7 +332,7 @@ public class InfectionRateTracker : MonoBehaviour
         UpdateDisplay();
     }
 
-    // For debugging
+    // For debugging, keeping in for now
     [ContextMenu("Reset Rate Tracker")]
     void ResetTracker()
     {

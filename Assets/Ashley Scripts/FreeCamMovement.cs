@@ -30,7 +30,7 @@ public class FreeRoamMovement : MonoBehaviour
 
     void Start()
     {
-        // Initialize rotation based on current camera rotation
+        // Initialise rotation based on current camera rotation
         Vector3 rot = transform.eulerAngles;
         pitch = rot.x;
         yaw = rot.y;
@@ -47,7 +47,7 @@ public class FreeRoamMovement : MonoBehaviour
 
     void Update()
     {
-        // Skip first frame to avoid jumps
+        // Skips first frame to avoid jumps
         if (wasJustEnabled)
         {
             wasJustEnabled = false;
@@ -79,7 +79,7 @@ public class FreeRoamMovement : MonoBehaviour
         }
         else
         {
-            // Fallback: just disable this camera (though it won't restore previous camera)
+            // Fallback: just disable this camera
             cam.enabled = false;
             Debug.Log("Exited Free Roam (no controller found)");
         }

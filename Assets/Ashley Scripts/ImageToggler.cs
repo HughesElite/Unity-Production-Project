@@ -12,7 +12,7 @@ public class ImageToggler : MonoBehaviour
 
     void Start()
     {
-        // Set initial visibility for both objects
+        // Sets initial visibility for both objects
         if (targetImage != null)
             targetImage.enabled = startVisible;
 
@@ -20,7 +20,7 @@ public class ImageToggler : MonoBehaviour
             targetButton.gameObject.SetActive(startVisible);
     }
 
-    // Call this method from your button's OnClick event
+    // Call this method from our button's OnClick event
     public void ToggleObjects()
     {
         bool newState = !IsAnyVisible();

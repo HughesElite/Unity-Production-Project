@@ -3,23 +3,23 @@ using UnityEngine;
 public class SimpleCameraSwitcher : MonoBehaviour
 {
     [Header("Camera Setup")]
-    public Camera[] cameras; // Drag as many cameras as you want here
+    public Camera[] cameras; // Allows for as many cameras as needed
 
     [Header("Settings")]
-    public bool startWithFirstCamera = true; // Start with cameras[0] enabled
+    public bool startWithFirstCamera = true; // Start with cameras [0] enabled
 
     private int currentCameraIndex = 0;
 
     void Start()
     {
-        // Validate cameras array
+        // Validates the cameras array
         if (cameras == null || cameras.Length == 0)
         {
             Debug.LogError("SimpleCameraSwitcher: No cameras assigned! Please assign cameras in the inspector.");
             return;
         }
 
-        // Remove any null cameras from the array
+        // Removes any null cameras from the array
         System.Array.Resize(ref cameras, cameras.Length);
         cameras = System.Array.FindAll(cameras, camera => camera != null);
 
@@ -29,16 +29,16 @@ public class SimpleCameraSwitcher : MonoBehaviour
             return;
         }
 
-        // Set initial camera
+        // Sets the initial camera
         if (startWithFirstCamera)
         {
             currentCameraIndex = 0;
         }
 
-        // Disable all cameras first
+        // Disables all cameras first
         DisableAllCameras();
 
-        // Enable the starting camera
+        // Enables the starting camera
         if (currentCameraIndex < cameras.Length)
         {
             cameras[currentCameraIndex].enabled = true;
@@ -48,14 +48,14 @@ public class SimpleCameraSwitcher : MonoBehaviour
 
     void Update()
     {
-        // Check for C key press
+        // Check for C key press as this allows to switch between cameras also
         if (Input.GetKeyDown(KeyCode.C))
         {
             SwitchCamera();
         }
     }
 
-    // Made public so buttons can call this method
+    // Made this public so buttons can call this method
     public void SwitchCamera()
     {
         // Safety check
@@ -72,7 +72,7 @@ public class SimpleCameraSwitcher : MonoBehaviour
             return;
         }
 
-        // Disable current camera
+        // Disables current camera
         if (currentCameraIndex < cameras.Length && cameras[currentCameraIndex] != null)
         {
             cameras[currentCameraIndex].enabled = false;
@@ -85,7 +85,7 @@ public class SimpleCameraSwitcher : MonoBehaviour
             currentCameraIndex = 0;
         }
 
-        // Enable new camera
+        // Enables new camera
         if (cameras[currentCameraIndex] != null)
         {
             cameras[currentCameraIndex].enabled = true;
@@ -114,7 +114,7 @@ public class SimpleCameraSwitcher : MonoBehaviour
             return;
         }
 
-        // Disable current camera
+        // Disables current camera
         if (currentCameraIndex < cameras.Length && cameras[currentCameraIndex] != null)
         {
             cameras[currentCameraIndex].enabled = false;
@@ -161,7 +161,7 @@ public class SimpleCameraSwitcher : MonoBehaviour
         Debug.LogError("SimpleCameraSwitcher: No valid cameras found!");
     }
 
-    // Get current camera info (useful for UI updates)
+    // Get current camera info (used for UI updates)
     public int GetCurrentCameraIndex()
     {
         return currentCameraIndex;

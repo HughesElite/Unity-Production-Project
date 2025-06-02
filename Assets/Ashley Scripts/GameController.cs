@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton pattern for easy access
+        // using a singleton pattern for easy access
         if (Instance == null)
         {
             Instance = this;
@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
         // Quits the application (works in a built game)
         Application.Quit();
 
-        // If running in the Unity Editor, stop play mode
+        // If running in the Unity Editor, stops play mode
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
