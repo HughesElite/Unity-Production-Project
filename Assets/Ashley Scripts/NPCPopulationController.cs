@@ -332,15 +332,26 @@ public class NPCPopulationController : MonoBehaviour
         // Wait for the GameObject to fully activate
         yield return null;
 
+        // Store the desired Y position (ground level)
+        float groundY = -2.7f; // Your ground level
+
         // Reinitialize NavMeshAgent
         UnityEngine.AI.NavMeshAgent agent = npc.GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent != null && agent.enabled)
         {
+            // Get current position but force Y to ground level
+            Vector3 desiredPos = npc.transform.position;
+            desiredPos.y = groundY;
+
             // Ensure NPC is on NavMesh
             UnityEngine.AI.NavMeshHit hit;
-            if (UnityEngine.AI.NavMesh.SamplePosition(npc.transform.position, out hit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
+            if (UnityEngine.AI.NavMesh.SamplePosition(desiredPos, out hit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
             {
-                agent.Warp(hit.position);
+                // Force the Y position to stay at ground level
+                Vector3 finalPos = hit.position;
+                finalPos.y = groundY;
+
+                agent.Warp(finalPos);
                 agent.isStopped = false;
             }
             else
