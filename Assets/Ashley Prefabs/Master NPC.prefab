@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 272283055353803700}
   - component: {fileID: 5214378136223019869}
   - component: {fileID: 1108785773249500546}
-  - component: {fileID: 7205112767523851482}
   - component: {fileID: 6090990084259754786}
   m_Layer: 0
   m_Name: Master NPC
@@ -163,27 +162,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &7205112767523851482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403284382533094995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00f8a7199b8f0844d985275b096f9bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  waitTimeAtTarget: 2
-  stopDistance: 1
-  WaitTimeAtStart: 2
 --- !u!114 &6090990084259754786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,4 +175,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infectionRadius: 3
+  checkInterval: 0.1
+  startInfected: 0
+  infectionDuration: 5
+  immuneAfterRecovery: 1
+  healthyColor: {r: 1, g: 1, b: 1, a: 1}
   infectedColor: {r: 0, g: 0, b: 0, a: 1}
+  recoveredColor: {r: 0, g: 1, b: 0, a: 1}
+  resetToOriginalColor: 0
