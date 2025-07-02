@@ -3,10 +3,10 @@ using UnityEngine;
 public class SimpleCameraSwitcher : MonoBehaviour
 {
     [Header("Camera Setup")]
-    public Camera[] cameras; // Allows for as many cameras as needed
+    public Camera[] cameras; 
 
     [Header("Settings")]
-    public bool startWithFirstCamera = true; // Start with cameras [0] enabled
+    public bool startWithFirstCamera = true; 
 
     private int currentCameraIndex = 0;
 
@@ -15,7 +15,6 @@ public class SimpleCameraSwitcher : MonoBehaviour
         // Validates the cameras array
         if (cameras == null || cameras.Length == 0)
         {
-            Debug.LogError("SimpleCameraSwitcher: No cameras assigned! Please assign cameras in the inspector.");
             return;
         }
 
@@ -25,24 +24,21 @@ public class SimpleCameraSwitcher : MonoBehaviour
 
         if (cameras.Length == 0)
         {
-            Debug.LogError("SimpleCameraSwitcher: All assigned cameras are null!");
             return;
         }
 
-        // Sets the initial camera
+       
         if (startWithFirstCamera)
         {
             currentCameraIndex = 0;
         }
 
-        // Disables all cameras first
+        
         DisableAllCameras();
 
-        // Enables the starting camera
         if (currentCameraIndex < cameras.Length)
         {
             cameras[currentCameraIndex].enabled = true;
-            Debug.Log($"Started with {GetCurrentCameraName()}");
         }
     }
 
@@ -58,17 +54,15 @@ public class SimpleCameraSwitcher : MonoBehaviour
     // Made this public so buttons can call this method
     public void SwitchCamera()
     {
-        // Safety check
+        
         if (cameras == null || cameras.Length == 0)
         {
-            Debug.LogWarning("SimpleCameraSwitcher: No cameras to switch between!");
             return;
         }
 
-        // If only one camera, no switching needed
+        
         if (cameras.Length == 1)
         {
-            Debug.Log("SimpleCameraSwitcher: Only one camera available, no switching needed.");
             return;
         }
 
@@ -89,41 +83,36 @@ public class SimpleCameraSwitcher : MonoBehaviour
         if (cameras[currentCameraIndex] != null)
         {
             cameras[currentCameraIndex].enabled = true;
-            Debug.Log($"Switched to {GetCurrentCameraName()}");
         }
         else
         {
-            Debug.LogWarning($"SimpleCameraSwitcher: Camera at index {currentCameraIndex} is null!");
-            // Try to find next valid camera
+          
             FindNextValidCamera();
         }
     }
 
-    // Switch to a specific camera by index
+    // Switchs to a specific camera by index
     public void SwitchToCamera(int index)
     {
         if (cameras == null || index < 0 || index >= cameras.Length)
         {
-            Debug.LogWarning($"SimpleCameraSwitcher: Invalid camera index {index}");
             return;
         }
 
         if (cameras[index] == null)
         {
-            Debug.LogWarning($"SimpleCameraSwitcher: Camera at index {index} is null!");
             return;
         }
 
-        // Disables current camera
+       
         if (currentCameraIndex < cameras.Length && cameras[currentCameraIndex] != null)
         {
             cameras[currentCameraIndex].enabled = false;
         }
 
-        // Switch to specified camera
+       
         currentCameraIndex = index;
         cameras[currentCameraIndex].enabled = true;
-        Debug.Log($"Switched to {GetCurrentCameraName()}");
     }
 
     private void DisableAllCameras()
@@ -152,13 +141,10 @@ public class SimpleCameraSwitcher : MonoBehaviour
             if (cameras[currentCameraIndex] != null)
             {
                 cameras[currentCameraIndex].enabled = true;
-                Debug.Log($"Found valid camera: {GetCurrentCameraName()}");
                 return;
             }
 
         } while (currentCameraIndex != startIndex);
-
-        Debug.LogError("SimpleCameraSwitcher: No valid cameras found!");
     }
 
     // Get current camera info (used for UI updates)
@@ -169,7 +155,7 @@ public class SimpleCameraSwitcher : MonoBehaviour
 
     public int GetCurrentCamera()
     {
-        return currentCameraIndex + 1; // 1-based for user display
+        return currentCameraIndex + 1; 
     }
 
     public string GetCurrentCameraName()

@@ -5,7 +5,7 @@ public class FreeRoamMovement : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 10f;
     public float fastMoveSpeed = 30f;
-    public float mouseSensitivity = 2f;
+    public float mouseSensitivity = 0.01f;
 
     [Header("Movement Style")]
     public bool useSmoothing = true;
@@ -30,7 +30,6 @@ public class FreeRoamMovement : MonoBehaviour
 
     void Start()
     {
-        // Initialise rotation based on current camera rotation
         Vector3 rot = transform.eulerAngles;
         pitch = rot.x;
         yaw = rot.y;
@@ -38,7 +37,6 @@ public class FreeRoamMovement : MonoBehaviour
 
     void OnEnable()
     {
-        // Reset when this camera becomes active
         Vector3 rot = transform.eulerAngles;
         pitch = rot.x;
         yaw = rot.y;
@@ -47,31 +45,27 @@ public class FreeRoamMovement : MonoBehaviour
 
     void Update()
     {
-        // Skips first frame to avoid jumps
+        // Skip first frame to avoid jumps
         if (wasJustEnabled)
         {
             wasJustEnabled = false;
             return;
         }
 
-        // Only work if this camera is active
         if (cam == null || !cam.enabled) return;
 
-        // Check for exit key
         if (Input.GetKeyDown(exitKey))
         {
             ExitFreeRoam();
             return;
         }
 
-        // Handle input
         HandleMouseLook();
         HandleMovement();
     }
 
     void ExitFreeRoam()
     {
-        // Find the FreeRoamCameraController and exit
         FreeRoamCameraController controller = FindFirstObjectByType<FreeRoamCameraController>();
         if (controller != null)
         {
@@ -79,9 +73,7 @@ public class FreeRoamMovement : MonoBehaviour
         }
         else
         {
-            // Fallback: just disable this camera
             cam.enabled = false;
-            Debug.Log("Exited Free Roam (no controller found)");
         }
     }
 
@@ -99,39 +91,34 @@ public class FreeRoamMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        // Use direct key checks instead of Input.GetAxis() which doesn't work when paused
         float horizontal = 0f;
         float vertical = 0f;
         float upDown = 0f;
 
-        // WASD movement using direct key checks
+        // WASD movement
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) horizontal = 1f;
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) horizontal = -1f;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) vertical = 1f;
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) vertical = -1f;
 
-        // Up/Down movement
         if (Input.GetKey(upKey)) upDown = 1f;
         if (Input.GetKey(downKey)) upDown = -1f;
 
-        // Calculate movement direction
         Vector3 moveDir = transform.right * horizontal +
                          transform.forward * vertical +
                          transform.up * upDown;
 
-        // Normalize to prevent faster diagonal movement
+        // Normalise to prevent faster diagonal movement
         if (moveDir.magnitude > 1f)
             moveDir.Normalize();
 
-        // Apply speed
         float currentSpeed = Input.GetKey(fastMoveKey) ? fastMoveSpeed : moveSpeed;
 
         if (useSmoothing)
         {
-            // Custom smoothing that works during pause
             Vector3 targetVelocity = moveDir * currentSpeed;
 
-            // Lerp towards target velocity using unscaled time
+            // Custom smoothing using unscaled time
             float smoothFactor = 1f - Mathf.Exp(-1f / smoothTime * Time.unscaledDeltaTime);
             currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, smoothFactor);
 
@@ -139,7 +126,6 @@ public class FreeRoamMovement : MonoBehaviour
         }
         else
         {
-            // Direct movement
             Vector3 movement = moveDir * currentSpeed * Time.unscaledDeltaTime;
             transform.position += movement;
         }

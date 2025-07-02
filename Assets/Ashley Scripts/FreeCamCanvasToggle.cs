@@ -20,7 +20,7 @@ public class CanvasToggle : MonoBehaviour
 
     void Update()
     {
-        // Check for hide key press
+        
         if (Input.GetKeyDown(hideKey))
         {
             HideCanvas();
@@ -33,7 +33,6 @@ public class CanvasToggle : MonoBehaviour
         if (targetCanvas != null)
         {
             targetCanvas.gameObject.SetActive(true);
-            Debug.Log("Canvas shown");
         }
     }
 
@@ -43,7 +42,6 @@ public class CanvasToggle : MonoBehaviour
         if (targetCanvas != null)
         {
             targetCanvas.gameObject.SetActive(false);
-            Debug.Log("Canvas hidden");
         }
     }
 
@@ -54,8 +52,6 @@ public class CanvasToggle : MonoBehaviour
         {
             bool isActive = targetCanvas.gameObject.activeSelf;
             targetCanvas.gameObject.SetActive(!isActive);
-
-            Debug.Log($"Canvas {(isActive ? "hidden" : "shown")}");
         }
     }
 }

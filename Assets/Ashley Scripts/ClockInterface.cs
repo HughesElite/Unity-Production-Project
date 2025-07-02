@@ -15,11 +15,11 @@ public class SimulationClock : MonoBehaviour
     public bool pauseWithGameController = true;
 
     // Time tracking
-    private int currentHour = 1; // 1-24 (1am, 2am, ..., 12pm, 1pm, ..., 12am)
+    private int currentHour = 1; // 1-24 (1am, 2am... 12pm, 1pm...)
     private int currentDayIndex = 0; // 0 = Monday, 1 = Tuesday, etc.
     private float hourTimer = 0f;
-    private GameController gameController;
 
+    private GameController gameController;
     private string[] dayNames = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
 
     void Start()
@@ -34,7 +34,6 @@ public class SimulationClock : MonoBehaviour
 
         if (clockText == null)
         {
-            Debug.LogError("SimulationClock: No TextMeshPro component found!");
             enabled = false;
             return;
         }
@@ -89,7 +88,6 @@ public class SimulationClock : MonoBehaviour
         // Convert our 1-24 system to 12-hour format
         if (currentHour <= 12)
         {
-            // 1am - 12pm
             if (currentHour == 12)
                 return "12pm"; // Noon
             else
@@ -97,7 +95,6 @@ public class SimulationClock : MonoBehaviour
         }
         else
         {
-            // 1pm - 12am
             if (currentHour == 24)
                 return "12am"; // Midnight
             else
@@ -105,7 +102,6 @@ public class SimulationClock : MonoBehaviour
         }
     }
 
-    // Public methods
     public void ResetClock()
     {
         currentHour = 1;
@@ -118,7 +114,6 @@ public class SimulationClock : MonoBehaviour
     {
         // 2 minutes = 120 seconds, 7 days × 24 hours = 168 hours
         hourDuration = 120f / 168f; // About 0.71 seconds per hour
-        Debug.Log($"Set up 2-minute week: {hourDuration:F2} seconds per hour");
     }
 
     public string GetCurrentDayName()
@@ -129,11 +124,5 @@ public class SimulationClock : MonoBehaviour
     public int GetCurrentHour()
     {
         return currentHour;
-    }
-
-    [ContextMenu("Setup 2-Minute Week")]
-    void Setup2MinuteWeek()
-    {
-        SetupTwoMinuteWeek();
     }
 }

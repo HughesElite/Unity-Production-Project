@@ -4,7 +4,7 @@ public class FreeRoamCameraController : MonoBehaviour
 {
     [Header("References")]
     public SimpleCameraSwitcher cameraSwitcher;
-    public Camera freeRoamCamera; // Direct reference instead of index
+    public Camera freeRoamCamera;
 
     [Header("Cursor Control")]
     public bool lockCursorInFreeRoam = true;
@@ -13,21 +13,16 @@ public class FreeRoamCameraController : MonoBehaviour
 
     void Start()
     {
-        // Makes sure free roam camera starts disabled
         if (freeRoamCamera != null)
         {
             freeRoamCamera.enabled = false;
         }
-
-        Debug.Log("FreeRoamCameraController: Free roam camera disabled at start");
     }
 
     void Update()
     {
-        // Check if we're currently on the free roam camera
         bool isOnFreeRoamCamera = (freeRoamCamera != null && freeRoamCamera.enabled);
 
-        // Manage cursor based on current camera
         if (isOnFreeRoamCamera && lockCursorInFreeRoam)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -40,40 +35,30 @@ public class FreeRoamCameraController : MonoBehaviour
         }
     }
 
-    // Call this from our "Free Cam" button
+    // Call this from "Free Cam" button
     public void SwitchToFreeRoam()
     {
         if (cameraSwitcher != null && freeRoamCamera != null)
         {
-            // Remember which camera was active
             previousCameraIndex = cameraSwitcher.GetCurrentCameraIndex();
 
-            // Disable current camera from switcher
             Camera currentCamera = cameraSwitcher.GetCurrentCameraObject();
             if (currentCamera != null)
             {
                 currentCamera.enabled = false;
             }
 
-            // Enable free roam camera
             freeRoamCamera.enabled = true;
-
-            Debug.Log("Switched to Free Roam Camera");
         }
     }
 
-    // Call this to exit free roam (go back to previous camera)
+    // Call this to exit free roam
     public void ExitFreeRoam()
     {
         if (cameraSwitcher != null && freeRoamCamera != null)
         {
-            // Disables free roam camera
             freeRoamCamera.enabled = false;
-
-            // Go back to the camera that was active before
             cameraSwitcher.SwitchToCamera(previousCameraIndex);
-
-            Debug.Log("Exited Free Roam Camera");
         }
     }
 }
