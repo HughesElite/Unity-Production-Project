@@ -8,15 +8,15 @@ public class InfectionRateTracker : MonoBehaviour
     public TextMeshProUGUI rateText;
 
     [Header("Rate Calculation Settings")]
-    public float sampleInterval = 1f; // How often to sample infection count (seconds)
-    public int maxSamples = 10; // How many samples to keep for rate calculation
+    public float sampleInterval = 1f;
+    public int maxSamples = 10;
     public bool pauseWithGameController = true;
 
     [Header("Display Options")]
     public bool showLabel = true;
     public string customLabel = "Infection Rate";
     public RateDisplayFormat displayFormat = RateDisplayFormat.PerMinute;
-    public bool showTrend = true; // Show ^ v - arrows
+    public bool showTrend = true;
     public bool useColors = false;
 
     [Header("Display Colors")]
@@ -27,9 +27,9 @@ public class InfectionRateTracker : MonoBehaviour
 
     public enum RateDisplayFormat
     {
-        PerSecond,   // "+2.3/sec"
-        PerMinute,   // "+5/min"
-        PerHour      // "+12/hr" (using game time from SimulationClock)
+        PerSecond,
+        PerMinute,
+        PerHour
     }
 
     public enum TrendDirection
@@ -62,18 +62,15 @@ public class InfectionRateTracker : MonoBehaviour
 
     void Start()
     {
-        // Gets components
         if (rateText == null)
             rateText = GetComponent<TextMeshProUGUI>();
 
         if (rateText == null)
         {
-            Debug.LogError("InfectionRateTracker: No TextMeshPro component found!");
             enabled = false;
             return;
         }
 
-        // Get references
         if (pauseWithGameController)
         {
             gameController = GameController.Instance;
@@ -81,18 +78,15 @@ public class InfectionRateTracker : MonoBehaviour
 
         simulationClock = FindFirstObjectByType<SimulationClock>();
 
-        // Initial sample
         TakeSample();
         UpdateDisplay();
     }
 
     void Update()
     {
-        // Skip if game is paused
         if (pauseWithGameController && gameController != null && gameController.IsGamePaused())
             return;
 
-        // Take samples at specified intervals
         if (Time.time >= nextSampleTime)
         {
             nextSampleTime = Time.time + sampleInterval;
@@ -126,12 +120,10 @@ public class InfectionRateTracker : MonoBehaviour
             return;
         }
 
-        // Convert to array for easier access
         InfectionSample[] sampleArray = samples.ToArray();
         InfectionSample oldestSample = sampleArray[0];
         InfectionSample newestSample = sampleArray[sampleArray.Length - 1];
 
-        // Calculate time difference based on display format
         float timeDifference = GetTimeDifference(oldestSample, newestSample);
 
         if (timeDifference <= 0f)
@@ -141,16 +133,12 @@ public class InfectionRateTracker : MonoBehaviour
             return;
         }
 
-        // Calculate infection difference
         int infectionDifference = newestSample.infectedCount - oldestSample.infectedCount;
-
-        // Calculate rate
         currentRate = infectionDifference / timeDifference;
 
-        // Determine trend (compare with previous rate if available)
+        // Calculate trend from recent vs older rate
         if (samples.Count >= 3)
         {
-            // Compare recent rate vs older rate for trend
             InfectionSample midSample = sampleArray[sampleArray.Length / 2];
             float recentTimeDiff = GetTimeDifference(midSample, newestSample);
             float olderTimeDiff = GetTimeDifference(oldestSample, midSample);
@@ -162,7 +150,7 @@ public class InfectionRateTracker : MonoBehaviour
 
                 float rateDifference = recentRate - olderRate;
 
-                if (rateDifference > 0.1f) // Threshold for "significant" change
+                if (rateDifference > 0.1f)
                     currentTrend = TrendDirection.Increasing;
                 else if (rateDifference < -0.1f)
                     currentTrend = TrendDirection.Decreasing;
@@ -183,7 +171,6 @@ public class InfectionRateTracker : MonoBehaviour
                 return (newer.realTime - older.realTime) / 60f;
 
             case RateDisplayFormat.PerHour:
-                // Use game time if available, otherwise fall back to real time
                 if (simulationClock != null)
                 {
                     float gameTimeDiff = newer.gameTime - older.gameTime;
@@ -193,7 +180,7 @@ public class InfectionRateTracker : MonoBehaviour
                 }
                 else
                 {
-                    return (newer.realTime - older.realTime) / 3600f; // Convert to hours
+                    return (newer.realTime - older.realTime) / 3600f;
                 }
 
             default:
@@ -224,10 +211,9 @@ public class InfectionRateTracker : MonoBehaviour
             return noDataText;
         }
 
-        // Format rate based on display format
         string rateString = FormatRate(currentRate);
 
-        // Add trend arrow if enabled
+        // Add trend arrow
         string trendArrow = "";
         if (showTrend)
         {
@@ -239,7 +225,6 @@ public class InfectionRateTracker : MonoBehaviour
             }
         }
 
-        // Build final text
         if (showLabel)
         {
             return customLabel + ": " + rateString + trendArrow;
@@ -283,7 +268,6 @@ public class InfectionRateTracker : MonoBehaviour
         }
     }
 
-    // Public methods for external control
     public float GetCurrentRate()
     {
         return currentRate;
@@ -297,7 +281,7 @@ public class InfectionRateTracker : MonoBehaviour
     public void SetDisplayFormat(RateDisplayFormat format)
     {
         displayFormat = format;
-        CalculateRate(); // Recalculate with new format
+        CalculateRate();
         UpdateDisplay();
     }
 
@@ -310,7 +294,6 @@ public class InfectionRateTracker : MonoBehaviour
     {
         this.maxSamples = Mathf.Max(2, maxSamples);
 
-        // Remove excess samples if new max is smaller
         while (samples.Count > this.maxSamples)
         {
             samples.Dequeue();
@@ -330,18 +313,5 @@ public class InfectionRateTracker : MonoBehaviour
         TakeSample();
         CalculateRate();
         UpdateDisplay();
-    }
-
-    // For debugging, keeping in for now
-    [ContextMenu("Reset Rate Tracker")]
-    void ResetTracker()
-    {
-        ResetSamples();
-    }
-
-    [ContextMenu("Force Sample")]
-    void ForceSample()
-    {
-        ForceUpdate();
     }
 }

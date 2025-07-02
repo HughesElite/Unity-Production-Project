@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        // using a singleton pattern for easy access
+        
         if (Instance == null)
         {
             Instance = this;
@@ -44,7 +44,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        // Global keyboard shortcuts
+        // keyboard shortcuts
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TogglePlayPause();
@@ -109,7 +109,7 @@ public class GameController : MonoBehaviour
         OnGameExit?.Invoke();
         Debug.Log("Exiting Game");
 
-        // Quits the application (works in a built game)
+        // Quits the application (works in built game also)
         Application.Quit();
 
         // If running in the Unity Editor, stops play mode
@@ -118,7 +118,7 @@ public class GameController : MonoBehaviour
 #endif
     }
 
-    // Utility methods for other scripts
+    // Utility methods for other scripts to add in the future
     public bool IsGamePaused() => isGamePaused;
     public float GetGameSpeed() => Time.timeScale;
     public void SetGameSpeed(float speed) => Time.timeScale = speed;
