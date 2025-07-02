@@ -29,7 +29,5 @@ public class WaypointCounter : MonoBehaviour
         GameObject[] waypoints = GameObject.FindGameObjectsWithTag(waypointTag);
         GameObject[] npcs = GameObject.FindGameObjectsWithTag(npcTag);
 
-        Debug.Log($"Total waypoints: {waypoints.Length} | Total NPCs: {npcs.Length}");
-
     }
 }
