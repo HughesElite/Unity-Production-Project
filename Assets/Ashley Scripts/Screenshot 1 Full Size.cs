@@ -14,7 +14,6 @@ public class ScreenshotTaker : MonoBehaviour
             }
             string path = Path.Combine(folderPath, "screenshot_" + System.DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png");
             ScreenCapture.CaptureScreenshot(path);
-            Debug.Log("Screenshot saved to: " + path);
         }
     }
 }
