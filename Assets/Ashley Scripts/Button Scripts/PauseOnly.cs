@@ -9,36 +9,24 @@ public class PauseOnlyButton : MonoBehaviour
     public TextMeshProUGUI buttonTMPText;
 
     [Header("Pause Settings")]
-    public bool updateButtonText = false; // Set to true if you want the button text to change
+    public bool updateButtonText = false;
     public string pausedText = "Game Paused";
-
-    [Header("Debug")]
-    public bool showDebugLogs = true;
 
     private GameController gameController;
 
     private void Start()
     {
-        // Get reference to GameController
         gameController = GameController.Instance;
-
-        if (gameController == null && showDebugLogs)
-        {
-            Debug.LogWarning("PauseOnlyButton: GameController not found. Will use fallback pause method.");
-        }
     }
 
-    // Public method to be called by button click events
     public void PauseGame()
     {
         if (gameController != null)
         {
-            // Use GameController's pause method
             gameController.PauseGame();
         }
         else
         {
-            // Fallback pause method
             Time.timeScale = 0f;
         }
 
@@ -46,14 +34,8 @@ public class PauseOnlyButton : MonoBehaviour
         {
             UpdateButtonText();
         }
-
-        if (showDebugLogs)
-        {
-            Debug.Log("PauseOnlyButton: Game paused");
-        }
     }
 
-    // Alternative method that checks if already paused
     public void PauseGameIfNotPaused()
     {
         bool isAlreadyPaused = false;
@@ -71,22 +53,16 @@ public class PauseOnlyButton : MonoBehaviour
         {
             PauseGame();
         }
-        else if (showDebugLogs)
-        {
-            Debug.Log("PauseOnlyButton: Game is already paused");
-        }
     }
 
     private void UpdateButtonText()
     {
         if (buttonText != null)
             buttonText.text = pausedText;
-
         if (buttonTMPText != null)
             buttonTMPText.text = pausedText;
     }
 
-    // Public method to check if game is paused
     public bool IsGamePaused()
     {
         if (gameController != null)
@@ -97,12 +73,5 @@ public class PauseOnlyButton : MonoBehaviour
         {
             return Time.timeScale == 0f;
         }
-    }
-
-    // For debugging
-    [ContextMenu("Pause Game Now")]
-    void DebugPauseGame()
-    {
-        PauseGame();
     }
 }

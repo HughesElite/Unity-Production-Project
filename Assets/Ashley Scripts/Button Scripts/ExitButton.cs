@@ -4,7 +4,7 @@ public class QuitGame : MonoBehaviour
 {
     public void ExitGame()
     {
-        // Quits the application (works in a built game)
+        
         Application.Quit();
 
         // If running in the Unity Editor, stop play mode

@@ -15,12 +15,11 @@ public class PlayPauseButton : MonoBehaviour
     {
         button = GetComponent<Button>();
 
-        // Optional: You can still add the listener programmatically
-        // Comment this out if you're using the inspector OnClick instead
+        
         if (button != null)
           button.onClick.AddListener(TogglePlayPause);
 
-        // Start paused
+        // Starts paused
         Time.timeScale = 0f;
         UpdateButtonText();
     }
@@ -34,7 +33,7 @@ public class PlayPauseButton : MonoBehaviour
         }
     }
 
-    // Made public so it can be used in Unity's OnClick event system
+    // Made this public so it can be used in Unity's OnClick event system
     public void TogglePlayPause()
     {
         if (isGamePaused)
