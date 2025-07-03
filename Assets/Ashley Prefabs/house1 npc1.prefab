@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 2082304117400843241}
   - component: {fileID: 4215030828956928}
   - component: {fileID: 7328793427809493103}
-  - component: {fileID: 8644724783662397025}
   m_Layer: 0
   m_Name: house1 npc1
   m_TagString: NPC
@@ -184,19 +183,3 @@ MonoBehaviour:
   infectedColor: {r: 0, g: 0, b: 0, a: 1}
   recoveredColor: {r: 0.53333336, g: 0.9372549, b: 1, a: 1}
   resetToOriginalColor: 0
---- !u!114 &8644724783662397025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8954362295300394426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 903ba8484ccb86e4bbaf64f2e38ee22e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waypointTag: Waypoint
-  waitTimeAtTarget: 2
-  stopDistance: 2
-  WaitTimeAtStart: 2

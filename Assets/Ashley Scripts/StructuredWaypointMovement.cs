@@ -49,6 +49,8 @@ public class PlayerMoveToObjects : MonoBehaviour
         // Wait until the agent reaches the starting position
         while (agent.pathPending || agent.remainingDistance > stopDistance)
         {
+
+            Debug.Log($"Returning - Remaining distance: {agent.remainingDistance}, PathPending: {agent.pathPending}");
             yield return null;
         }
 
