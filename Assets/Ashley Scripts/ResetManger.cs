@@ -245,23 +245,44 @@ public class NPCUIResetManager : MonoBehaviour
 
     void ResetNPCMovement(GameObject npc, NPCResetData data)
     {
+        // Stop NavMesh agent first
+        if (data.navAgent != null)
+        {
+            data.navAgent.isStopped = true;
+            data.navAgent.ResetPath();
+        }
+
         // Reset PlayerMoveToObjects script
         if (data.moveScript != null)
         {
             data.moveScript.StopAllCoroutines();
-            // The script will restart its coroutine automatically in Start()
-            data.moveScript.enabled = false;
-            data.moveScript.enabled = true;
+            StartCoroutine(RestartMovementScript(data.moveScript));
         }
 
         // Reset PlayerMoveRandomly script  
         if (data.randomMoveScript != null)
         {
             data.randomMoveScript.StopAllCoroutines();
-            // The script will restart its coroutine automatically in Start()
-            data.randomMoveScript.enabled = false;
-            data.randomMoveScript.enabled = true;
+            StartCoroutine(RestartRandomMovementScript(data.randomMoveScript));
         }
+    }
+
+    // Helper coroutine to properly restart the movement script
+    IEnumerator RestartMovementScript(PlayerMoveToObjects moveScript)
+    {
+        yield return null; // Wait one frame for position reset to complete
+
+        // Manually restart the movement cycle
+        moveScript.StartCoroutine("MoveToWaypointsAndBack");
+    }
+
+    // Helper coroutine for random movement script
+    IEnumerator RestartRandomMovementScript(PlayerMoveRandomly randomScript)
+    {
+        yield return null; // Wait one frame for position reset to complete
+
+        // Manually restart the movement cycle  
+        randomScript.StartCoroutine("MoveToRandomTargetsAndBack");
     }
 
     void ResetNPCVirusState(GameObject npc)

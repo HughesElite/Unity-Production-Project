@@ -360,6 +360,7 @@ public class NPCPopulationController : MonoBehaviour
         }
     }
 
+
     private IEnumerator ReinitializeNPC(GameObject npc)
     {
         // Wait for GameObject activation to complete
@@ -392,29 +393,30 @@ public class NPCPopulationController : MonoBehaviour
                 Debug.LogWarning($"{npc.name} couldn't find NavMesh position nearby!");
             }
         }
-
-        // Restart movement scripts to clear any stuck states
-        var moveToObjects = npc.GetComponent<PlayerMoveToObjects>();
-        var moveRandomly = npc.GetComponent<PlayerMoveRandomly>();
-
-        if (moveToObjects != null && moveToObjects.enabled)
-        {
-            // Stop all movement coroutines and restart the component
-            moveToObjects.StopAllCoroutines();
-            moveToObjects.enabled = false;
-            yield return null;
-            moveToObjects.enabled = true;
-        }
-
-        if (moveRandomly != null && moveRandomly.enabled)
-        {
-            // Stop all movement coroutines and restart the component
-            moveRandomly.StopAllCoroutines();
-            moveRandomly.enabled = false;
-            yield return null;
-            moveRandomly.enabled = true;
-        }
     }
+
+    //    // Restart movement scripts to clear any stuck states
+    //    var moveToObjects = npc.GetComponent<PlayerMoveToObjects>();
+    //    var moveRandomly = npc.GetComponent<PlayerMoveRandomly>();
+
+    //    if (moveToObjects != null && moveToObjects.enabled)
+    //    {
+    //        // Stop all movement coroutines and restart the component
+    //        moveToObjects.StopAllCoroutines();
+    //        moveToObjects.enabled = false;
+    //        yield return null;
+    //        moveToObjects.enabled = true;
+    //    }
+
+    //    if (moveRandomly != null && moveRandomly.enabled)
+    //    {
+    //        // Stop all movement coroutines and restart the component
+    //        moveRandomly.StopAllCoroutines();
+    //        moveRandomly.enabled = false;
+    //        yield return null;
+    //        moveRandomly.enabled = true;
+    //    }
+    //}
 
     // Helper methods to update UI input fields safely
     private void UpdatePopulationInputFieldText(string text)
