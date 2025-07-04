@@ -110,11 +110,13 @@ public class SimulationClock : MonoBehaviour
         UpdateDisplay();
     }
 
-    public void SetupTwoMinuteWeek()
-    {
-        // 2 minutes = 120 seconds, 7 days × 24 hours = 168 hours
-        hourDuration = 120f / 168f; // About 0.71 seconds per hour
-    }
+    //public void SetupThreeMinuteWeek()
+    //{
+    //    // 3 minutes = 180 seconds, 1 week = 168 hours
+    //    // About 1.07 seconds per hour
+
+    //    hourDuration = 180F / 168f; 
+    //}
 
     public string GetCurrentDayName()
     {

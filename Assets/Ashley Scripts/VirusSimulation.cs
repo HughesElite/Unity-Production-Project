@@ -13,6 +13,11 @@ public class VirusSimulation : MonoBehaviour
     public float infectionDuration = 5f; // How long NPC stays infected
     public bool immuneAfterRecovery = true; // Can't be reinfected after recovery
 
+    [Header("Post-Recovery Settings")]
+    [Range(1f, 200f)]
+    public float recoveredDuration = 10f; // How long NPC stays in recovered state before returning to healthy
+    public bool enableRecoveredDuration = true; // If true, NPCs return to healthy color after recovered duration
+
     [Header("Visual Settings")]
     public Color healthyColor = Color.white;
     public Color infectedColor = Color.red;
@@ -27,6 +32,7 @@ public class VirusSimulation : MonoBehaviour
     private Color originalColor;
     private NPCState currentState = NPCState.Healthy;
     private float infectionStartTime;
+    private float recoveryStartTime; // Track when recovery started
     private float nextCheckTime = 0f;
 
     public enum NPCState
@@ -96,6 +102,12 @@ public class VirusSimulation : MonoBehaviour
         {
             CheckForRecovery();
         }
+
+        // Check for return to healthy (only if recovered and feature enabled)
+        if (currentState == NPCState.Recovered && enableRecoveredDuration)
+        {
+            CheckForReturnToHealthy();
+        }
     }
 
     void CheckForInfectionSpread()
@@ -121,6 +133,15 @@ public class VirusSimulation : MonoBehaviour
         if (Time.time >= infectionStartTime + infectionDuration)
         {
             RecoverNPC();
+        }
+    }
+
+    void CheckForReturnToHealthy()
+    {
+        // Check if enough time has passed to return to healthy state
+        if (Time.time >= recoveryStartTime + recoveredDuration)
+        {
+            ReturnToHealthy();
         }
     }
 
@@ -156,6 +177,7 @@ public class VirusSimulation : MonoBehaviour
         if (currentState == NPCState.Infected)
         {
             currentState = NPCState.Recovered;
+            recoveryStartTime = Time.time; // Track when recovery started
 
             // Set recovered color
             if (resetToOriginalColor)
@@ -168,6 +190,26 @@ public class VirusSimulation : MonoBehaviour
             }
 
             Debug.Log($"{gameObject.name} has recovered!");
+        }
+    }
+
+    void ReturnToHealthy()
+    {
+        if (currentState == NPCState.Recovered)
+        {
+            currentState = NPCState.Healthy;
+
+            // Return to healthy color
+            if (resetToOriginalColor)
+            {
+                npcRenderer.material.color = originalColor;
+            }
+            else
+            {
+                npcRenderer.material.color = healthyColor;
+            }
+
+            Debug.Log($"{gameObject.name} has returned to healthy state!");
         }
     }
 
@@ -186,6 +228,15 @@ public class VirusSimulation : MonoBehaviour
         if (currentState == NPCState.Infected)
         {
             RecoverNPC();
+        }
+    }
+
+    // Public method to force return to healthy (for testing)
+    public void ForceReturnToHealthy()
+    {
+        if (currentState == NPCState.Recovered)
+        {
+            ReturnToHealthy();
         }
     }
 
@@ -223,6 +274,23 @@ public class VirusSimulation : MonoBehaviour
         if (currentState != NPCState.Infected) return 0f;
 
         float timeRemaining = (infectionStartTime + infectionDuration) - Time.time;
+        return Mathf.Max(0f, timeRemaining);
+    }
+
+    // Methods for recovery duration tracking
+    public float GetRecoveryProgress()
+    {
+        if (currentState != NPCState.Recovered) return 0f;
+
+        float timeRecovered = Time.time - recoveryStartTime;
+        return Mathf.Clamp01(timeRecovered / recoveredDuration);
+    }
+
+    public float GetTimeUntilReturnToHealthy()
+    {
+        if (currentState != NPCState.Recovered) return 0f;
+
+        float timeRemaining = (recoveryStartTime + recoveredDuration) - Time.time;
         return Mathf.Max(0f, timeRemaining);
     }
 
@@ -323,6 +391,12 @@ public class VirusSimulation : MonoBehaviour
     void RecoverThisNPC()
     {
         ForceRecovery();
+    }
+
+    [ContextMenu("Force Return to Healthy")]
+    void ForceReturnToHealthyState()
+    {
+        ForceReturnToHealthy();
     }
 
     [ContextMenu("Reset This NPC")]
