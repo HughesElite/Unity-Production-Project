@@ -9,19 +9,32 @@ public class PlayPauseButton : MonoBehaviour
     public TextMeshProUGUI buttonTMPText;
 
     private Button button;
-    private bool isGamePaused = true;
+    public bool isGamePaused = true;
 
     private void Start()
     {
         button = GetComponent<Button>();
 
-        
         if (button != null)
-          button.onClick.AddListener(TogglePlayPause);
+            button.onClick.AddListener(TogglePlayPause);
 
-        // Starts paused
-        Time.timeScale = 0f;
-        UpdateButtonText();
+        // Check if hard reset just happened
+        if (PlayerPrefs.GetInt("HardResetHappened", 0) == 1)
+        {
+            // Clear the flag
+            PlayerPrefs.SetInt("HardResetHappened", 0);
+
+            // Force paused state after hard reset
+            isGamePaused = true;
+            Time.timeScale = 0f;
+            UpdateButtonText();
+        }
+        else
+        {
+            // Normal startup - starts paused
+            Time.timeScale = 0f;
+            UpdateButtonText();
+        }
     }
 
     private void Update()
