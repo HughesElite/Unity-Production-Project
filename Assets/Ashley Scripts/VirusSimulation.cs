@@ -166,7 +166,12 @@ public class VirusSimulation : MonoBehaviour
         {
             currentState = NPCState.Infected;
             infectionStartTime = Time.time;
-            npcRenderer.material.color = infectedColor;
+
+            // Add null check to prevent crash during scene reload
+            if (npcRenderer != null)
+            {
+                npcRenderer.material.color = infectedColor;
+            }
 
             Debug.Log($"{gameObject.name} has been infected!");
         }
@@ -179,14 +184,18 @@ public class VirusSimulation : MonoBehaviour
             currentState = NPCState.Recovered;
             recoveryStartTime = Time.time; // Track when recovery started
 
-            // Set recovered color
-            if (resetToOriginalColor)
+            // Add null check to prevent crash during scene reload
+            if (npcRenderer != null)
             {
-                npcRenderer.material.color = originalColor;
-            }
-            else
-            {
-                npcRenderer.material.color = recoveredColor;
+                // Set recovered color
+                if (resetToOriginalColor)
+                {
+                    npcRenderer.material.color = originalColor;
+                }
+                else
+                {
+                    npcRenderer.material.color = recoveredColor;
+                }
             }
 
             Debug.Log($"{gameObject.name} has recovered!");
@@ -199,14 +208,18 @@ public class VirusSimulation : MonoBehaviour
         {
             currentState = NPCState.Healthy;
 
-            // Return to healthy color
-            if (resetToOriginalColor)
+            // Add null check to prevent crash during scene reload
+            if (npcRenderer != null)
             {
-                npcRenderer.material.color = originalColor;
-            }
-            else
-            {
-                npcRenderer.material.color = healthyColor;
+                // Return to healthy color
+                if (resetToOriginalColor)
+                {
+                    npcRenderer.material.color = originalColor;
+                }
+                else
+                {
+                    npcRenderer.material.color = healthyColor;
+                }
             }
 
             Debug.Log($"{gameObject.name} has returned to healthy state!");
@@ -245,13 +258,17 @@ public class VirusSimulation : MonoBehaviour
     {
         currentState = NPCState.Healthy;
 
-        if (resetToOriginalColor)
+        // Add null check to prevent crash during scene reload
+        if (npcRenderer != null)
         {
-            npcRenderer.material.color = originalColor;
-        }
-        else
-        {
-            npcRenderer.material.color = healthyColor;
+            if (resetToOriginalColor)
+            {
+                npcRenderer.material.color = originalColor;
+            }
+            else
+            {
+                npcRenderer.material.color = healthyColor;
+            }
         }
     }
 

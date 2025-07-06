@@ -42,6 +42,7 @@ public class PeakInfectionTracker : MonoBehaviour
     void UpdatePeakDisplay()
     {
         int currentInfected = VirusSimulation.GetInfectedCount();
+        Debug.Log($"Peak tracker sees {currentInfected} infected NPCs");
 
         // Peak only increases, never decreases (historical maximum)
         if (currentInfected > peakInfections)
