@@ -248,7 +248,7 @@ public class InfectionRateTracker : MonoBehaviour
                 return sign + rate.ToString("F0") + "/min";
 
             case RateDisplayFormat.PerHour:
-                return sign + rate.ToString("F0") + "/hr";
+                return sign + rate.ToString("F0") + "/hour";
 
             default:
                 return sign + rate.ToString("F1");
