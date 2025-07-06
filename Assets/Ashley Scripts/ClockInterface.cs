@@ -15,12 +15,12 @@ public class SimulationClock : MonoBehaviour
     public bool pauseWithGameController = true;
 
     // Time tracking
-    private int currentHour = 1; // 1-24 (1am, 2am... 12pm, 1pm...)
-    private int currentDayIndex = 0; // 0 = Monday, 1 = Tuesday, etc.
-    private float hourTimer = 0f;
+    public int currentHour = 1; // 1-24 (1am, 2am... 12pm, 1pm...)
+    public int currentDayIndex = 0; // 0 = Monday, 1 = Tuesday, etc.
+    public float hourTimer = 0f;
 
-    private GameController gameController;
-    private string[] dayNames = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    public GameController gameController;
+    public string[] dayNames = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
 
     void Start()
     {
@@ -83,7 +83,7 @@ public class SimulationClock : MonoBehaviour
         clockText.text = $"{GetCurrentDayName()}\n{timeString}";
     }
 
-    string GetTimeString()
+    public string GetTimeString()
     {
         // Convert our 1-24 system to 12-hour format
         if (currentHour <= 12)

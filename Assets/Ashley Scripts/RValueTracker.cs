@@ -35,6 +35,10 @@ public class RValueCalculator : MonoBehaviour
     private float nextSampleTime = 0f;
     private float currentRValue = 1f;
 
+    // NEW: Additional tracking for results screen
+    private float highestRValue = 1f;
+    private string highestRValueTime = "";
+
     private struct InfectionSample
     {
         public float time;
@@ -134,6 +138,17 @@ public class RValueCalculator : MonoBehaviour
 
         // Clamp to reasonable bounds
         currentRValue = Mathf.Clamp(currentRValue, 0f, 10f);
+
+        // NEW: Track highest R-value
+        if (currentRValue > highestRValue)
+        {
+            highestRValue = currentRValue;
+            SimulationClock clock = FindFirstObjectByType<SimulationClock>();
+            if (clock != null)
+            {
+                highestRValueTime = $"{clock.GetCurrentDayName()} {clock.GetTimeString()}";
+            }
+        }
     }
 
     float CalculateUsingGrowthRate(InfectionSample[] samples)
@@ -294,6 +309,9 @@ public class RValueCalculator : MonoBehaviour
     {
         samples.Clear();
         currentRValue = 1f;
+        // NEW: Reset highest R-value tracking
+        highestRValue = 1f;
+        highestRValueTime = "";
         UpdateDisplay();
     }
 
@@ -302,6 +320,17 @@ public class RValueCalculator : MonoBehaviour
         TakeSample();
         CalculateRValue();
         UpdateDisplay();
+    }
+
+    // NEW: Getter methods for results screen
+    public float GetHighestRValue()
+    {
+        return highestRValue;
+    }
+
+    public string GetHighestRValueTime()
+    {
+        return highestRValueTime;
     }
 
     // For debugging

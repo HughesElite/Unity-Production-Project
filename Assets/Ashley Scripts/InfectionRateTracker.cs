@@ -46,6 +46,11 @@ public class InfectionRateTracker : MonoBehaviour
     private float currentRate = 0f;
     private TrendDirection currentTrend = TrendDirection.Stable;
 
+    // NEW: Additional tracking for results screen
+    private float fastestSpreadRate = 0f;
+    private string fastestSpreadPeriod = "";
+    private Queue<DailySpread> dailySpreads = new Queue<DailySpread>();
+
     private struct InfectionSample
     {
         public float realTime;
@@ -57,6 +62,19 @@ public class InfectionRateTracker : MonoBehaviour
             this.realTime = realTime;
             this.gameTime = gameTime;
             this.infectedCount = infectedCount;
+        }
+    }
+
+    // NEW: Structure for tracking daily spread rates
+    private struct DailySpread
+    {
+        public string day;
+        public float spreadRate;
+
+        public DailySpread(string day, float spreadRate)
+        {
+            this.day = day;
+            this.spreadRate = spreadRate;
         }
     }
 
@@ -135,6 +153,16 @@ public class InfectionRateTracker : MonoBehaviour
 
         int infectionDifference = newestSample.infectedCount - oldestSample.infectedCount;
         currentRate = infectionDifference / timeDifference;
+
+        // NEW: Track fastest spread rate
+        if (currentRate > fastestSpreadRate)
+        {
+            fastestSpreadRate = currentRate;
+            if (simulationClock != null)
+            {
+                fastestSpreadPeriod = simulationClock.GetCurrentDayName();
+            }
+        }
 
         // Calculate trend from recent vs older rate
         if (samples.Count >= 3)
@@ -305,6 +333,10 @@ public class InfectionRateTracker : MonoBehaviour
         samples.Clear();
         currentRate = 0f;
         currentTrend = TrendDirection.Stable;
+        // NEW: Reset fastest spread tracking
+        fastestSpreadRate = 0f;
+        fastestSpreadPeriod = "";
+        dailySpreads.Clear();
         UpdateDisplay();
     }
 
@@ -313,5 +345,16 @@ public class InfectionRateTracker : MonoBehaviour
         TakeSample();
         CalculateRate();
         UpdateDisplay();
+    }
+
+    // NEW: Getter methods for results screen
+    public float GetFastestSpreadRate()
+    {
+        return fastestSpreadRate;
+    }
+
+    public string GetFastestSpreadPeriod()
+    {
+        return fastestSpreadPeriod;
     }
 }

@@ -16,6 +16,11 @@ public class PeakInfectionTracker : MonoBehaviour
     private float nextUpdateTime;
     private int peakInfections = 0; // Highest simultaneous infection count recorded
 
+    // NEW: Additional tracking for results screen
+    private string peakTime = "Not reached";
+    private float outbreakStartTime = -1f;
+    private bool outbreakStarted = false;
+
     void Start()
     {
         if (peakText == null)
@@ -48,6 +53,20 @@ public class PeakInfectionTracker : MonoBehaviour
         if (currentInfected > peakInfections)
         {
             peakInfections = currentInfected;
+
+            // NEW: Record when peak occurred
+            SimulationClock clock = FindFirstObjectByType<SimulationClock>();
+            if (clock != null)
+            {
+                peakTime = $"{clock.GetCurrentDayName()} {clock.GetTimeString()}";
+            }
+        }
+
+        // NEW: Track outbreak start
+        if (!outbreakStarted && currentInfected > 0)
+        {
+            outbreakStarted = true;
+            outbreakStartTime = Time.time;
         }
 
         if (peakText != null)
@@ -71,6 +90,10 @@ public class PeakInfectionTracker : MonoBehaviour
     public void ResetPeak()
     {
         peakInfections = 0;
+        // NEW: Reset additional tracking
+        peakTime = "Not reached";
+        outbreakStartTime = -1f;
+        outbreakStarted = false;
         UpdatePeakDisplay();
     }
 
@@ -83,5 +106,16 @@ public class PeakInfectionTracker : MonoBehaviour
     public void ForceUpdate()
     {
         UpdatePeakDisplay();
+    }
+
+    // NEW: Getter methods for results screen
+    public string GetPeakTime()
+    {
+        return peakTime;
+    }
+
+    public float GetOutbreakStartTime()
+    {
+        return outbreakStartTime;
     }
 }

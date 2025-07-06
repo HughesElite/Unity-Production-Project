@@ -27,6 +27,9 @@ public class VirusSimulation : MonoBehaviour
     // Static tracking for all NPCs
     private static List<VirusSimulation> allNPCs = new List<VirusSimulation>();
 
+    // NEW: Static tracking for infection durations (for results screen)
+    private static List<float> allInfectionDurations = new List<float>();
+
     // Instance variables
     private Renderer npcRenderer;
     private Color originalColor;
@@ -183,6 +186,10 @@ public class VirusSimulation : MonoBehaviour
         {
             currentState = NPCState.Recovered;
             recoveryStartTime = Time.time; // Track when recovery started
+
+            // NEW: Track infection duration for results screen
+            float infectionDurationActual = Time.time - infectionStartTime;
+            allInfectionDurations.Add(infectionDurationActual);
 
             // Add null check to prevent crash during scene reload
             if (npcRenderer != null)
@@ -395,6 +402,29 @@ public class VirusSimulation : MonoBehaviour
             }
         }
         Debug.Log($"{resetCount} active NPCs reset to healthy state");
+    }
+
+    // NEW: Static methods for infection duration tracking (for results screen)
+    public static float GetAverageInfectionDuration()
+    {
+        if (allInfectionDurations.Count == 0) return 0f;
+
+        float sum = 0f;
+        foreach (float duration in allInfectionDurations)
+        {
+            sum += duration;
+        }
+        return sum / allInfectionDurations.Count;
+    }
+
+    public static void ResetInfectionDurations()
+    {
+        allInfectionDurations.Clear();
+    }
+
+    public static int GetTotalRecoveredCount()
+    {
+        return allInfectionDurations.Count;
     }
 
     // Manual infection controls (for testing/debugging)
