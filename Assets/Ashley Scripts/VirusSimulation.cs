@@ -8,17 +8,17 @@ public class VirusSimulation : MonoBehaviour
     public float checkInterval = 0.1f; // Check every 0.1 seconds instead of every frame
     public bool startInfected = false; // Check this for patient zero
 
-    [Header("Recovery Settings")]
+    [Header("Infection Duration")]
     [Range(1f, 200f)]
     public float infectionDuration = 5f; // How long NPC stays infected
     public bool immuneAfterRecovery = true; // Can't be reinfected after recovery
 
-    [Header("Post-Recovery Settings")]
+    [Header("Recovery Duration")]
     [Range(1f, 200f)]
     public float recoveredDuration = 10f; // How long NPC stays in recovered state before returning to healthy
     public bool enableRecoveredDuration = true; // If true, NPCs return to healthy color after recovered duration
 
-    [Header("Visual Settings")]
+    [Header("Colour Settings")]
     public Color healthyColor = Color.white;
     public Color infectedColor = Color.red;
     public Color recoveredColor = Color.green;
